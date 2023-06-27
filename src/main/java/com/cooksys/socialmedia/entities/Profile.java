@@ -11,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 @Table(name="user_table")
-public class User {
+public class Profile {
 
     @Id
     private String username;
@@ -30,10 +30,10 @@ public class User {
     @JoinTable(name="followers_following",
             joinColumns = @JoinColumn(name = "following_id"),
             inverseJoinColumns = @JoinColumn(name = "follower_id"))
-    private List<User> followers;
+    private List<Profile> followers;
 
     @ManyToMany(mappedBy = "followers")
-    private List<User> following;
+    private List<Profile> following;
 
     @OneToMany(mappedBy = "")
     private List<Tweet> tweets;
