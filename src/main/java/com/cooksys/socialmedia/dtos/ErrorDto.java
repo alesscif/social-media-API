@@ -1,14 +1,14 @@
 package com.cooksys.socialmedia.dtos;
 
-
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class CredentialsDto {
+public class ErrorDto {
 
-    private String username;
-    private String password;
+    private String message;
 
 }

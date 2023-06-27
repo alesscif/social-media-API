@@ -7,14 +7,18 @@ import javax.persistence.Id;
 
 import com.cooksys.socialmedia.embeddables.Profile;
 
+
+import java.sql.Timestamp;
+
+@NoArgsConstructor
+@Data
 public class UserResponseDto {
-	
-	private Long id;
 
-	
-	private String joined;
+    private String username;
 
+    private ProfileDto profile;
 
-	private Profile profile;
+    private Timestamp joined;
+
 
 }

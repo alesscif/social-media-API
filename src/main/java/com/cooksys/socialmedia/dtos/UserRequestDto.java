@@ -6,10 +6,9 @@ import com.cooksys.socialmedia.embeddables.Profile;
 
 public class UserRequestDto {
 
-	private Credentials credentials;
+    private CredentialsDto credentials;
 
-	private Profile profile;
+    private ProfileDto profile;
 
-	private boolean deleted;
 
 }
