@@ -1,13 +1,11 @@
 package com.cooksys.socialmedia.mappers;
 
 import com.cooksys.socialmedia.dtos.ProfileRequestDto;
-import com.cooksys.socialmedia.dtos.ProfileResponseDto;
-import com.cooksys.socialmedia.entities.Profile;
-
-import java.util.List;
+import com.cooksys.socialmedia.dtos.UserResponseDto;
+import com.cooksys.socialmedia.entities.embeddable.Profile;
 
 public interface ProfileMapper {
-    ProfileResponseDto entityToDto(Profile entity);
+    UserResponseDto entityToDto(Profile entity);
     Profile dtoToEntity(ProfileRequestDto dto);
     
 }

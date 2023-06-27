@@ -5,12 +5,10 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Data
-public class ProfileResponseDto {
+public class UserRequestDto {
 
-    private String username;
+    private CredentialsDto credentials;
 
-    private Profile profile;
-
-    private Timestamp joined;
+    private ProfileDto profile;
 
 }
