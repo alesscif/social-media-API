@@ -1,6 +1,6 @@
 package com.cooksys.socialmedia.dtos;
 
-import javax.persistence.Column;
+
 
 import com.cooksys.socialmedia.entities.User;
 

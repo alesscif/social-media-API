@@ -17,8 +17,18 @@ import lombok.NoArgsConstructor;
 @Data
 public class Hashtag {
 	
-	  @Id
-	  @GeneratedValue
-	  private Long id;
+	  	@Id
+	  	@GeneratedValue
+		private Long id;
+
+		@Column(nullable = false)
+		private String label;
+
+		@Column(nullable = false)
+		private String firstUsed;
+
+		@Column(nullable = false)
+		private String lastUsed;
+
 
 }
