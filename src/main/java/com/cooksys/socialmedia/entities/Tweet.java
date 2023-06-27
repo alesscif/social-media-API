@@ -9,32 +9,26 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
-import com.cooksys.socialmedia.embeddables.Credentials;
-import com.cooksys.socialmedia.embeddables.Profile;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.util.*;
 
 @Entity
 @NoArgsConstructor
 @Data
-public class User {
-
+public class Tweet {
+	
 	@Id
 	@GeneratedValue
 	private Long id;
 
-	@Column(unique = true)
-	private Credentials credentials;
+	@Column(nullable = false)
+	private User author;
 
 	@Column(nullable = false)
-	private String joined;
-
-	@Embedded
-	private Profile profile;
+	private String posted;
 
 	@Column(nullable = false)
-	private boolean deleted;
+	private String content;
+
 
 }
