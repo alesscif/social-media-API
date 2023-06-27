@@ -1,7 +1,12 @@
 package com.cooksys.socialmedia.dtos;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+import com.cooksys.socialmedia.embeddables.Profile;
+
 
 import java.sql.Timestamp;
 
@@ -14,5 +19,6 @@ public class UserResponseDto {
     private ProfileDto profile;
 
     private Timestamp joined;
+
 
 }
