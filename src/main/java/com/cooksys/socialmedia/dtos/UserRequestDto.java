@@ -1,14 +1,14 @@
 package com.cooksys.socialmedia.dtos;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
-@Data
+import com.cooksys.socialmedia.embeddables.Credentials;
+import com.cooksys.socialmedia.embeddables.Profile;
+
 public class UserRequestDto {
 
     private CredentialsDto credentials;
 
     private ProfileDto profile;
+
 
 }

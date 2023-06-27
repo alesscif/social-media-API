@@ -1,5 +1,6 @@
 package com.cooksys.socialmedia.entities;
 
+
 import com.cooksys.socialmedia.entities.embeddable.Credentials;
 import com.cooksys.socialmedia.entities.embeddable.Profile;
 import lombok.Data;
@@ -9,6 +10,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
+
 
 @Entity
 @NoArgsConstructor
@@ -50,6 +52,7 @@ public class User {
 
     @ManyToMany(mappedBy = "mentionedUsers")
     private List<Tweet> mentions;
+
 
 
 
