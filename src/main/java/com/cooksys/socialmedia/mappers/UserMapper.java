@@ -1,6 +1,6 @@
 package com.cooksys.socialmedia.mappers;
 
-import com.cooksys.socialmedia.dtos.ProfileRequestDto;
+import com.cooksys.socialmedia.dtos.ProfileDto;
 import com.cooksys.socialmedia.dtos.UserResponseDto;
 import com.cooksys.socialmedia.entities.embeddable.Profile;
 import org.mapstruct.Mapper;
@@ -17,7 +17,7 @@ public interface UserMapper {
     @Mapping(target = "username", source = "credentials.username")
     UserResponseDto entityToDto(Profile entity);
     List<UserResponseDto> entitiesToDtos(List<Profile> entities);
-    Profile dtoToEntity(ProfileRequestDto dto);
-    List<Profile> dtostoEntities(List<ProfileRequestDto> dtos);
+    Profile dtoToEntity(ProfileDto dto);
+    List<Profile> dtostoEntities(List<ProfileDto> dtos);
 
 }
