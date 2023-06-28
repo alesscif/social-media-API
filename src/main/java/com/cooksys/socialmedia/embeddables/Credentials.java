@@ -19,7 +19,7 @@ import java.util.*;
 @Data
 public class Credentials {
 	@Column(nullable = false)
-	private String userName;
+	private String username;
 
 	@Column(nullable = false)
 	private String password;
