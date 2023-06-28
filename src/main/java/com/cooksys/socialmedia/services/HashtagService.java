@@ -5,11 +5,7 @@ import java.util.List;
 import com.cooksys.socialmedia.dtos.HashtagDto;
 
 public interface HashtagService {
-	
-	
 	List <HashtagDto> getAllUsers();
-	
-	
 	HashtagDto getUsers(String label);
 
 }

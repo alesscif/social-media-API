@@ -1,16 +1,19 @@
 package com.cooksys.socialmedia.dtos;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
 
-import com.cooksys.socialmedia.entities.User;
-
+@NoArgsConstructor
+@Data
 public class TweetRequestDto {
 	
 	
-	private User author;
+	private UserRequestDto author;
 
 	
-	private String posted;
+	private Timestamp posted;
 
 	
 	private String content;

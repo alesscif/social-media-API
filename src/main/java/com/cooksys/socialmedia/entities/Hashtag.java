@@ -14,6 +14,8 @@ import javax.persistence.OneToMany;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
+
 @Entity
 @NoArgsConstructor
 @Data
@@ -27,11 +29,10 @@ public class Hashtag {
 		private String label;
 
 		@Column(nullable = false)
-		private String firstUsed;
+		private Timestamp firstUsed;
 
 		@Column(nullable = false)
-		private String lastUsed;
-		
+		private Timestamp lastUsed;
 		
 		@ManyToMany
 	    @JoinTable(name="tweet_hashtags")
