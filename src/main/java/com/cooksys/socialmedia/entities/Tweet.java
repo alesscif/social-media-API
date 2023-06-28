@@ -1,15 +1,6 @@
 package com.cooksys.socialmedia.entities;
 
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -17,10 +8,15 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Entity
 @NoArgsConstructor
 @Data
+@Table(name = "tweet")
+@SQLDelete(sql = "UPDATE tweet SET deleted = true WHERE id=?")
+@Where(clause = "deleted=false")
 public class Tweet {
 	
 	@Id
@@ -41,8 +37,7 @@ public class Tweet {
 	private String content;
 	
 	
-	private boolean deleted;
-
+	private boolean deleted = Boolean.FALSE;
 	
 	private List <Long> inReplyTo;
 	

@@ -1,7 +1,9 @@
 package com.cooksys.socialmedia.services.impl;
 
 import com.cooksys.socialmedia.dtos.*;
+import com.cooksys.socialmedia.repositories.TweetRepository;
 import com.cooksys.socialmedia.services.TweetService;
+import com.cooksys.socialmedia.mappers.TweetMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +12,10 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class TweetServiceImpl implements TweetService {
+
+    private TweetRepository tweetRepository;
+    private TweetMapper tweetMapper;
+
     @Override
     public List<TweetResponseDto> getFeed(String username) {
         return null;
@@ -32,7 +38,7 @@ public class TweetServiceImpl implements TweetService {
 
     @Override
     public List<TweetResponseDto> getAllTweets() {
-        return null;
+        return tweetMapper.entitiesToDtos(tweetRepository.findAll());
     }
 
     @Override

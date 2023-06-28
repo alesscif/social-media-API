@@ -6,6 +6,8 @@ import com.cooksys.socialmedia.entities.embeddable.Profile;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -16,6 +18,8 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 @Table(name="user_table")
+@SQLDelete(sql = "UPDATE user_table SET deleted = true WHERE id=?")
+@Where(clause = "deleted=false")
 public class User {
 
     @Id
@@ -34,7 +38,7 @@ public class User {
     @Column(nullable = false)
     private Timestamp joined;
 
-    private boolean deleted = false;
+    private boolean deleted = Boolean.FALSE;
 
     @ManyToMany
     @JoinTable(name="followers_following")
