@@ -20,27 +20,21 @@ import org.hibernate.annotations.Where;
 public class Tweet {
 	
 	@Id
-	@OneToMany(mappedBy="hashtag")
 	@GeneratedValue
 	private Long id;
-
 	
 	@Column(nullable = false)
 	private User author;
-
 	
 	@CreationTimestamp
 	@Column(nullable = false)
 	private Timestamp posted;
 
-	
 	private String content;
-	
 	
 	private boolean deleted = Boolean.FALSE;
 	
 	private List <Long> inReplyTo;
-	
 	
 	private List <Long> repostOf;
 	
