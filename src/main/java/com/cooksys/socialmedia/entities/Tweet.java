@@ -20,27 +20,21 @@ import org.hibernate.annotations.Where;
 public class Tweet {
 	
 	@Id
-	@OneToMany(mappedBy="hashtag")
 	@GeneratedValue
 	private Long id;
-
 	
 	@Column(nullable = false)
-	private Long author;
-
+	private User author;
 	
 	@CreationTimestamp
 	@Column(nullable = false)
 	private Timestamp posted;
 
-	
 	private String content;
-	
 	
 	private boolean deleted = Boolean.FALSE;
 	
 	private List <Long> inReplyTo;
-	
 	
 	private List <Long> repostOf;
 	
@@ -54,7 +48,7 @@ public class Tweet {
 	inverseJoinColumns = @JoinColumn(name="tweet_id"))
 	private List<User> mentionedUsers;
 	
-	@ManyToMany (mappedBy = "likedBy")
-	private List<User> likes;
+	@ManyToMany (mappedBy = "likes")
+	private List<User> likedBy;
 
 }

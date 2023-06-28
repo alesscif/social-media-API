@@ -34,7 +34,7 @@ public class User {
     @Column(nullable = false)
     private Profile profile;
 
-    @CreationTimestamp// @UpdateTimestamp for hashtags
+    @CreationTimestamp
     @Column(nullable = false)
     private Timestamp joined;
 
@@ -54,16 +54,9 @@ public class User {
     @JoinTable(name="user_likes",
     joinColumns = @JoinColumn(name="user_id"),
     inverseJoinColumns = @JoinColumn(name="tweet_id"))
-    private List<Tweet> likedBy;
+    private List<Tweet> likes;
 
     @ManyToMany(mappedBy = "mentionedUsers")
     private List<Tweet> mentions;
-
-
-
-
-
-
-
 
 }

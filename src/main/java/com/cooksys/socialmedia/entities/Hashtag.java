@@ -37,6 +37,6 @@ public class Hashtag {
 		
 		@ManyToMany
 	    @JoinTable(name="tweet_hashtags")
-		private List <Tweet> tweets;
+		private List<Tweet> tweets;
 
 }
