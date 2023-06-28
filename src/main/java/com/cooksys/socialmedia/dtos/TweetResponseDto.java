@@ -20,4 +20,7 @@ public class TweetResponseDto {
 	
 	private String content;
 
+	private TweetResponseDto inReplyTo;
+	
+	private TweetResponseDto repostOf;
 }
