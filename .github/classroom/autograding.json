@@ -1,0 +1,14 @@
+{
+  "tests": [
+    {
+      "name": "newman",
+      "setup": "",
+      "run": "- name: Newman Action   uses: matt-ball/newman-action@v1.0.4",
+      "input": "",
+      "output": "",
+      "comparison": "included",
+      "timeout": 5,
+      "points": null
+    }
+  ]
+}
