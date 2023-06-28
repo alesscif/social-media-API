@@ -46,7 +46,15 @@ public class Tweet {
 	
 	@ManyToMany
     @JoinTable(name="tweet_hashtags")
-	private Long tweet_id;
+	private List <Hashtag> hashtags;
 
+	@ManyToMany
+	@JoinTable(name="user_mentions",
+	joinColumns = @JoinColumn(name="user_id"),
+	inverseJoinColumns = @JoinColumn(name="tweet_id"))
+	private List<User> mentionedUsers;
+	
+	@ManyToMany (mappedBy = "likedBy")
+	private List<User> likes;
 
 }

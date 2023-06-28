@@ -15,6 +15,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -36,6 +37,6 @@ public class Hashtag {
 		
 		@ManyToMany
 	    @JoinTable(name="tweet_hashtags")
-		private Long hashtag_id;
+		private List <Tweet> tweets;
 
 }
