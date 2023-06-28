@@ -26,7 +26,7 @@ public class Tweet {
 
 	
 	@Column(nullable = false)
-	private Long author;
+	private User author;
 
 	
 	@CreationTimestamp
@@ -54,7 +54,7 @@ public class Tweet {
 	inverseJoinColumns = @JoinColumn(name="tweet_id"))
 	private List<User> mentionedUsers;
 	
-	@ManyToMany (mappedBy = "likedBy")
-	private List<User> likes;
+	@ManyToMany (mappedBy = "likes")
+	private List<User> likedBy;
 
 }
