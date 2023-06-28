@@ -2,15 +2,24 @@ package com.cooksys.socialmedia.services.impl;
 
 import com.cooksys.socialmedia.dtos.UserRequestDto;
 import com.cooksys.socialmedia.dtos.UserResponseDto;
+import com.cooksys.socialmedia.entities.User;
+import com.cooksys.socialmedia.exceptions.NotFoundException;
+import com.cooksys.socialmedia.mappers.UserMapper;
+import com.cooksys.socialmedia.repositories.UserRepository;
 import com.cooksys.socialmedia.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+
+    private UserRepository userRepository;
+    private UserMapper userMapper;
+
     @Override
     public List<UserResponseDto> getAllUsers() {
         return null;
@@ -48,11 +57,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserResponseDto> getFollowers(String username) {
-        return null;
+        Optional<User> user = userRepository.findFirstByUsername(username);
+        if (user.isEmpty()) throw new NotFoundException("no user found with provided username");
+        return userMapper.entitiesToDtos(user.get().getFollowers());
     }
 
     @Override
     public List<UserResponseDto> getFollowing(String username) {
-        return null;
+        Optional<User> user = userRepository.findFirstByUsername(username);
+        if (user.isEmpty()) throw new NotFoundException("no user found with provided username");
+        return userMapper.entitiesToDtos(user.get().getFollowing());
     }
 }
