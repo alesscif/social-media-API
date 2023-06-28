@@ -2,9 +2,11 @@ package com.cooksys.socialmedia.services.impl;
 
 import com.cooksys.socialmedia.dtos.UserRequestDto;
 import com.cooksys.socialmedia.dtos.UserResponseDto;
+import com.cooksys.socialmedia.entities.Tweet;
 import com.cooksys.socialmedia.entities.User;
 import com.cooksys.socialmedia.exceptions.NotFoundException;
 import com.cooksys.socialmedia.mappers.UserMapper;
+import com.cooksys.socialmedia.repositories.TweetRepository;
 import com.cooksys.socialmedia.repositories.UserRepository;
 import com.cooksys.socialmedia.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,7 @@ public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
     private UserMapper userMapper;
+    private TweetRepository tweetRepository;
 
     @Override
     public List<UserResponseDto> getAllUsers() {
@@ -68,4 +71,18 @@ public class UserServiceImpl implements UserService {
         if (user.isEmpty()) throw new NotFoundException("no user found with provided username");
         return userMapper.entitiesToDtos(user.get().getFollowing());
     }
+
+    @Override
+    public List<UserResponseDto> getMentions(Long tweetID) {
+        Optional<Tweet> tweet = tweetRepository.findById(tweetID);
+        if (tweet.isEmpty()) throw new NotFoundException("no tweet found with provided id");
+        return userMapper.entitiesToDtos(tweet.get().getMentionedUsers());
+    }
+
+    @Override
+    public List<UserResponseDto> getLikes(Long tweetID) {
+        return null;
+    }
+
+
 }

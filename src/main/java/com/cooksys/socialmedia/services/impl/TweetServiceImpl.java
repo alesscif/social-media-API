@@ -72,16 +72,6 @@ public class TweetServiceImpl implements TweetService {
     }
 
     @Override
-    public List<HashtagDto> getTags(Long tweetID) {
-        return null;
-    }
-
-    @Override
-    public List<UserResponseDto> getLikes(Long tweetID) {
-        return null;
-    }
-
-    @Override
     public ContextDto getContext(Long tweetID) {
         return null;
     }
@@ -96,8 +86,4 @@ public class TweetServiceImpl implements TweetService {
         return null;
     }
 
-    @Override
-    public List<UserResponseDto> getMentions(Long tweetID) {
-        return null;
-    }
 }

@@ -7,5 +7,5 @@ import com.cooksys.socialmedia.dtos.HashtagDto;
 public interface HashtagService {
 	List <HashtagDto> getAllUsers();
 	HashtagDto getUsers(String label);
-
+    List<HashtagDto> getTags(Long tweetID);
 }

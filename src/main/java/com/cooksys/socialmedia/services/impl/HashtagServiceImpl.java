@@ -22,4 +22,9 @@ public class HashtagServiceImpl implements HashtagService {
 		return null;
 	}
 
+	@Override
+	public List<HashtagDto> getTags(Long tweetID) {
+		return null;
+	}
+
 }
