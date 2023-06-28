@@ -8,9 +8,6 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @Data
 public class HashtagDto {
-
-	private Long id;
-
 	
 	private String label;
 
