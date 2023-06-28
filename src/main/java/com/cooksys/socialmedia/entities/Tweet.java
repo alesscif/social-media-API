@@ -46,7 +46,8 @@ public class Tweet {
 	
 	@ManyToMany
     @JoinTable(name="tweet_hashtags")
-	private Long tweet_id;
+	private List <Hashtag> hashtags;
 
+	private List <User> mentions; 
 
 }
