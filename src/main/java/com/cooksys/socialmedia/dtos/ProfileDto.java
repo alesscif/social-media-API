@@ -13,5 +13,4 @@ public class ProfileDto {
     private String lastName;
     private String phone;
 
-
 }

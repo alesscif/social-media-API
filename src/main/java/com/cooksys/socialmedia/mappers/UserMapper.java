@@ -11,9 +11,6 @@ import java.util.List;
 @Mapper(componentModel = "spring", uses = {ProfileMapper.class, CredentialsMapper.class})
 public interface UserMapper {
 
-    // TweetMappper:
-    // uses = {UserMapper.class}
-
     @Mapping(target = "username", source = "credentials.username")
     UserResponseDto entityToDto(Profile entity);
     @Mapping(target = "username", source = "credentials.username")

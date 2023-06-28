@@ -23,9 +23,11 @@ public class User {
     private Long id;
 
     @Embedded
+    @Column(nullable = false)
     private Credentials credentials;
 
     @Embedded
+    @Column(nullable = false)
     private Profile profile;
 
     @CreationTimestamp// @UpdateTimestamp for hashtags
