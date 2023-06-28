@@ -7,11 +7,11 @@ import lombok.NoArgsConstructor;
 @Data
 public class ContextDto {
 	
-	String target;
+	private TweetResponseDto target;
 	
-	String before;
+	private List<TweetResponseDto> before;
 	
-	String after;
+	private List<TweetResponseDto> after;
 	
 
 }
