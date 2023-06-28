@@ -9,13 +9,8 @@ import java.sql.Timestamp;
 @Data
 public class TweetRequestDto {
 	
-	
-	private UserRequestDto author;
-
-	
-	private Timestamp posted;
-
-	
 	private String content;
+
+	private CredentialsDto credentials;
 
 }
