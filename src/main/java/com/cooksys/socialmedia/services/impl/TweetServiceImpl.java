@@ -1,21 +1,20 @@
 package com.cooksys.socialmedia.services.impl;
 
-import com.cooksys.quiz_api.dtos.QuestionResponseDto;
-import com.cooksys.quiz_api.entities.Question;
-import com.cooksys.quiz_api.entities.Quiz;
 import com.cooksys.socialmedia.dtos.*;
 import com.cooksys.socialmedia.entities.Tweet;
 import com.cooksys.socialmedia.entities.User;
+import com.cooksys.socialmedia.exceptions.NotFoundException;
 import com.cooksys.socialmedia.repositories.TweetRepository;
+import com.cooksys.socialmedia.repositories.UserRepository;
 import com.cooksys.socialmedia.services.TweetService;
 import com.cooksys.socialmedia.mappers.TweetMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
-import java.util.ArrayList;
+
 @Service
 @RequiredArgsConstructor
 public class TweetServiceImpl implements TweetService {
@@ -24,46 +23,16 @@ public class TweetServiceImpl implements TweetService {
     private TweetMapper tweetMapper;
     private UserRepository userRepository;
 
-    private Tweet getTweetById(Long id) {
-		Optional<Tweet> optionalTweet = tweetRepository.findById(id);
-
-		if (optionalTweet.isEmpty()) {
-			throw new IllegalStateException();
-		}
-
-		return optionalTweet.get();
-	}
-
-	private User getUser(String userName) {
-		Optional<User> optionalUser = tweetRepository.findUserByUserName(userName);
-
-		if (optionalUser.isEmpty()) {
-			throw new IllegalStateException();
-		}
     @Override
     public List<TweetResponseDto> getFeed(String username) {
-    	
-    		User user = getUser(username);
-    		List <Tweet> feed=user.getTweets(); 
-    		
-    		
-    		
-    		
-    		
-
-    		
-    		
-    	
+        return null;
     }
 
     @Override
     public List<TweetResponseDto> getTweets(String username) {
-        return null;
-    }
-
-    @Override
-    public List<TweetResponseDto> getMentions(String username) {
-        return null;
+        Optional<User> user = userRepository.findFirstByCredentialsUsername(username);
+        if (user.isEmpty()) throw new NotFoundException("no user found with provided username");
+        return tweetMapper.entitiesToDtos(tweetRepository.findByAuthor(user.get()));
     }
 
     @Override
@@ -73,7 +42,7 @@ public class TweetServiceImpl implements TweetService {
 
     @Override
     public List<TweetResponseDto> getAllTweets() {
-        return tweetMapper.entitiesToDtos(tweetRepository.findAll());
+        return tweetMapper.entitiesToDtos(tweetRepository.findAll(Sort.by(Sort.Direction.DESC,"posted")));
     }
 
     @Override
@@ -83,7 +52,9 @@ public class TweetServiceImpl implements TweetService {
 
     @Override
     public TweetResponseDto getTweet(Long tweetID) {
-        return null;
+        Optional<Tweet> tweet = tweetRepository.findById(tweetID);
+        if (tweet.isEmpty()) throw new NotFoundException("no tweet found with provided id");
+        return tweetMapper.entityToDto(tweet.get());
     }
 
     @Override
@@ -93,7 +64,7 @@ public class TweetServiceImpl implements TweetService {
 
     @Override
     public void likeTweet(Long tweetId, CredentialsDto credentials) {
-
+        return;
     }
 
     @Override
@@ -119,6 +90,13 @@ public class TweetServiceImpl implements TweetService {
     @Override
     public List<TweetResponseDto> getReposts(Long tweetID) {
         return null;
+    }
+
+    @Override
+    public List<TweetResponseDto> getTweetsWithUserMentions(String username) {
+        Optional<User> user = userRepository.findFirstByCredentialsUsername(username);
+        if (user.isEmpty()) throw new NotFoundException("no user found with provided username");
+        return tweetMapper.entitiesToDtos(tweetRepository.findByAuthor(user.get()));
     }
 
 }

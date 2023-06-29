@@ -60,20 +60,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserResponseDto> getFollowers(String username) {
-        Optional<User> user = userRepository.findFirstByUsername(username);
+        Optional<User> user = userRepository.findFirstByCredentialsUsername(username);
         if (user.isEmpty()) throw new NotFoundException("no user found with provided username");
         return userMapper.entitiesToDtos(user.get().getFollowers());
     }
 
     @Override
     public List<UserResponseDto> getFollowing(String username) {
-        Optional<User> user = userRepository.findFirstByUsername(username);
+        Optional<User> user = userRepository.findFirstByCredentialsUsername(username);
         if (user.isEmpty()) throw new NotFoundException("no user found with provided username");
         return userMapper.entitiesToDtos(user.get().getFollowing());
     }
 
     @Override
-    public List<UserResponseDto> getMentions(Long tweetID) {
+    public List<UserResponseDto> getMentionedUsers(Long tweetID) {
         Optional<Tweet> tweet = tweetRepository.findById(tweetID);
         if (tweet.isEmpty()) throw new NotFoundException("no tweet found with provided id");
         return userMapper.entitiesToDtos(tweet.get().getMentionedUsers());
