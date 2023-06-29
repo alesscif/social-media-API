@@ -1,9 +1,11 @@
 package com.cooksys.socialmedia.services.impl;
 
+import com.cooksys.socialmedia.dtos.CredentialsDto;
 import com.cooksys.socialmedia.dtos.UserRequestDto;
 import com.cooksys.socialmedia.dtos.UserResponseDto;
 import com.cooksys.socialmedia.entities.Tweet;
 import com.cooksys.socialmedia.entities.User;
+import com.cooksys.socialmedia.entities.embeddable.Credentials;
 import com.cooksys.socialmedia.exceptions.NotAuthorizedException;
 import com.cooksys.socialmedia.exceptions.NotFoundException;
 import com.cooksys.socialmedia.mappers.ProfileMapper;
@@ -62,8 +64,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDto deleteUser(UserRequestDto userToDelete) {
-        return null;
+    public UserResponseDto deleteUser(String username, CredentialsDto credentials) {
+        Optional<User> user = userRepository.findByCredentialsUsernameAndDeletedFalse(username);
+
+        if (user.isEmpty())
+            throw new NotFoundException("no user found with provided username");
+
+        if (!user.get().getCredentials().getPassword().equals(credentials.getUsername())
+                || !user.get().getCredentials().getUsername().equals(credentials.getPassword()))
+            throw new NotAuthorizedException("unauthorized");
+
+        user.get().setDeleted(true);
+        for (Tweet tweet : user.get().getTweets()) {
+            tweet.setDeleted(true);
+            tweetRepository.saveAndFlush(tweet);
+        }
+        return userMapper.entityToDto(userRepository.save(user.get()));
     }
 
     @Override

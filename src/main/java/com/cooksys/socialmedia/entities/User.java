@@ -42,10 +42,10 @@ public class User {
     @JoinTable(name="followers_following")
     private List<User> followers;
 
-    @ManyToMany(mappedBy = "followers")
+    @ManyToMany(mappedBy="followers")
     private List<User> following;
 
-    @OneToMany(mappedBy = "author")
+    @OneToMany(mappedBy="author")
     private List<Tweet> tweets;
 
     @ManyToMany

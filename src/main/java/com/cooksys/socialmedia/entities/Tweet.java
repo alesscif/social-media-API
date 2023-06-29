@@ -21,7 +21,7 @@ public class Tweet {
 	private Long id;
 
 	@ManyToOne
-	@JoinColumn(name="tweets", nullable = false)
+	@JoinColumn(nullable = false)
 	private User author;
 	
 	@CreationTimestamp

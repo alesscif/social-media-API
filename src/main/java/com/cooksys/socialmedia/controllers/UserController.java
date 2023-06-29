@@ -1,5 +1,6 @@
 package com.cooksys.socialmedia.controllers;
 
+import com.cooksys.socialmedia.dtos.CredentialsDto;
 import com.cooksys.socialmedia.dtos.TweetResponseDto;
 import com.cooksys.socialmedia.dtos.UserRequestDto;
 import com.cooksys.socialmedia.dtos.UserResponseDto;
@@ -51,6 +52,11 @@ public class UserController {
     @PatchMapping(path="/@{username}")
     public UserResponseDto updateUser(@PathVariable String username, @RequestBody UserRequestDto updateData) {
         return userService.updateUser(username, updateData);
+    }
+
+    @DeleteMapping(path="/@{username}")
+    public UserResponseDto deleteUser(@PathVariable String username, @RequestBody CredentialsDto credentials) {
+        return userService.deleteUser(username, credentials);
     }
 
 }
