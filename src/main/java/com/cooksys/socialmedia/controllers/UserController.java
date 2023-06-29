@@ -44,5 +44,9 @@ public class UserController {
     public UserResponseDto getUser(@PathVariable String username) {
         return userService.getUser(username);
     }
+    
+    @GetMapping(path="/@{username}/feed)")
+    public List<TweetResponseDto> getFeed(@PathVariable String username)
+    		{return tweetService.getFeed(username);}
 
 }

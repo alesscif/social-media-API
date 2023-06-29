@@ -25,7 +25,7 @@ public class HashtagController {
 		return hashtagService.getAllHashtags();
 	}
 
-	@GetMapping
+	@GetMapping (path = "/{label}")
 	public List<TweetResponseDto> getTweets(String label) {
 		return null;
 	}

@@ -23,12 +23,7 @@ public class HashtagServiceImpl implements HashtagService {
 		return hashtagMapper.entitiesToDtos(hashtagRepository.findAll());
 	}
 
-	@Override
-	public List <TweetResponseDto> getTweets(String label)
-
-	{
-		return null;
-	}
+	
 
 	@Override
 	public List<HashtagDto> getTags(Long tweetID) {
