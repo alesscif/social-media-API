@@ -99,7 +99,7 @@ public class TweetServiceImpl implements TweetService {
         List <Tweet> beforeT= new ArrayList<>();
         Tweet bt = tweet.get().getInReplyTo();
         while(bt != null) {
-            beforeT.add(bt);
+        	if(!bt.isDeleted()) beforeT.add(bt);
             bt = bt.getInReplyTo();
         }
         beforeT.sort( Comparator.comparing(Tweet::getPosted));
@@ -111,8 +111,9 @@ public class TweetServiceImpl implements TweetService {
         while(!stack.isEmpty()) {
             List<Tweet> replies = stack.pop().getReplies();
             for (Tweet at : replies) {
+            	
                 stack.push(at);
-                afterT.add(at);
+                if(!at.isDeleted()) afterT.add(at);
             }
         }
         afterT.sort(Comparator.comparing(Tweet::getPosted));

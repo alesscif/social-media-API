@@ -13,5 +13,6 @@ public interface TweetRepository extends JpaRepository<Tweet, Long> {
 
     List<Tweet> findByAuthorAndDeletedFalseOrderByPostedAsc(User author);
     Optional<Tweet> findByIdAndDeletedFalse(Long id);
+    
 }
 
