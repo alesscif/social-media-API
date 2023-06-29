@@ -147,8 +147,40 @@ public class TweetServiceImpl implements TweetService {
         replyy.setAuthor(replier.get());
 
         replyy.setContent(content);
-        replyy.setMentionedUsers(original.get().getMentionedUsers());
-        replyy.setHashtags(original.get().getHashtags());
+       
+
+        List<String> mentions = Pattern.compile("(@[a-zA-Z0-9]+)")
+                .matcher(content)
+                .results()
+                .map(MatchResult::group)
+                .toList();
+
+        List<String> hashtags = Pattern.compile("(#[a-zA-Z0-9]+)")
+                .matcher(content)
+                .results()
+                .map(MatchResult::group)
+                .toList();
+
+        List<User> mentionedUsers = new ArrayList<>();
+        for (String mention : mentions) {
+            Optional<User> u = userRepository.findByCredentialsUsernameAndDeletedFalse(mention.substring(1));
+            u.ifPresent(mentionedUsers::add);
+        }
+        replyy.setMentionedUsers(mentionedUsers);
+
+        List<Hashtag> tags = new ArrayList<>();
+        for (String label : hashtags) {
+            Optional<Hashtag> h = hashtagRepository.findByLabel(label.substring(1));
+            if (h.isEmpty()) {
+                Hashtag ht = new Hashtag();
+                ht.setLabel(label.substring(1));
+                hashtagRepository.saveAndFlush(ht);
+                tags.add(ht);
+                continue;
+            }
+            tags.add(h.get());
+        }
+        replyy.setHashtags(tags);
         replies.add(replyy);
         tweetRepository.saveAndFlush(original.get());
         
