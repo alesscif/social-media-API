@@ -19,21 +19,16 @@ public class Hashtag {
 		@GeneratedValue
 		private Long id;
 
-		@Column(nullable = false)
+		@Column(nullable = false, unique = true)
 		private String label;
 
 		@CreationTimestamp
-		@Column(nullable = false)
 		private Timestamp firstUsed;
 
 		@UpdateTimestamp
-		@Column(nullable = false)
 		private Timestamp lastUsed;
 		
-		@ManyToMany
-		@JoinTable(name="tweet_hashtags",
-		joinColumns = @JoinColumn(name="tweet_id"),
-		inverseJoinColumns = @JoinColumn(name="hashtag_id"))
+		@ManyToMany(mappedBy="hashtags")
 		private List<Tweet> tweets;
 
 }

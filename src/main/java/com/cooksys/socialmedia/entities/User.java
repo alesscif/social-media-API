@@ -18,8 +18,6 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 @Table(name="user_table")
-@SQLDelete(sql = "UPDATE user_table SET deleted = true WHERE id=?")
-@Where(clause = "deleted=false")
 public class User {
 
     @Id
@@ -38,7 +36,7 @@ public class User {
     @Column(nullable = false)
     private Timestamp joined;
 
-    private boolean deleted = Boolean.FALSE;
+    private boolean deleted = false;
 
     @ManyToMany
     @JoinTable(name="followers_following")

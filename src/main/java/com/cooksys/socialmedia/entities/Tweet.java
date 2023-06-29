@@ -14,9 +14,6 @@ import org.hibernate.annotations.Where;
 @Entity
 @NoArgsConstructor
 @Data
-@Table(name="tweet")
-@SQLDelete(sql="UPDATE tweet SET deleted = true WHERE id=?")
-@Where(clause="deleted=false")
 public class Tweet {
 	
 	@Id
@@ -33,18 +30,24 @@ public class Tweet {
 
 	private String content;
 	
-	private boolean deleted = Boolean.FALSE;
+	private boolean deleted = false;
 
-	@OneToOne
-	private Tweet tweet;
-
-	@OneToOne(mappedBy="tweet")
+	@ManyToOne
 	private Tweet inReplyTo;
 
-	@OneToOne(mappedBy="tweet")
+	@OneToMany(mappedBy = "inReplyTo")
+	private List<Tweet> replies;
+
+	@ManyToOne
 	private Tweet repostOf;
+
+	@OneToMany(mappedBy = "repostOf")
+	private List<Tweet> reposts;
 	
-	@ManyToMany(mappedBy="tweets")
+	@ManyToMany
+	@JoinTable(name="tweet_hashtags",
+			joinColumns = @JoinColumn(name="tweet_id"),
+			inverseJoinColumns = @JoinColumn(name="hashtag_id"))
 	private List<Hashtag> hashtags;
 
 	@ManyToMany

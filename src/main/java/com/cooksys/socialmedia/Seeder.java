@@ -137,7 +137,7 @@ public class Seeder implements CommandLineRunner {
         deletedUserPro.setPhone("NULL");
         deletedUser.setProfile(deletedUserPro);
         // Deleted
-        deletedUser.setDeleted(false);
+        deletedUser.setDeleted(true);
         userRepository.saveAllAndFlush(Arrays.asList(user1, user2, user3, user4, user5, deletedUser));
 
         // ----- HASHTAGS -----
@@ -275,7 +275,6 @@ public class Seeder implements CommandLineRunner {
         user1.setFollowers(followers_1);
         userRepository.saveAndFlush(user1);
 
-        userRepository.delete(deletedUser);
     }
 
 }

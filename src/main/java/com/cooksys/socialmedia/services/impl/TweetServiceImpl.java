@@ -27,14 +27,13 @@ public class TweetServiceImpl implements TweetService {
 
     @Override
     public List<TweetResponseDto> getFeed(String username) {
-    	Optional<User> user = userRepository.findFirstByCredentialsUsername(username);
+    	Optional<User> user = userRepository.findByCredentialsUsername(username);
     	 if (user.isEmpty()) throw new NotFoundException("no user found with provided username");
     	 List<User> feedUsers=user.get().getFollowing();
     	 List<Tweet> feed=new ArrayList<>();
     	 for(User u : feedUsers)
     	 {
     		 for (Tweet t : u.getTweets()) {
-    		 
     			 feed.add(t);
     		 if(t.getRepostOf()!=null)
     			 feed.add(t.getRepostOf());
@@ -51,7 +50,7 @@ public class TweetServiceImpl implements TweetService {
 
     @Override
     public List<TweetResponseDto> getTweets(String username) {
-        Optional<User> user = userRepository.findFirstByCredentialsUsername(username);
+        Optional<User> user = userRepository.findByCredentialsUsername(username);
         if (user.isEmpty()) throw new NotFoundException("no user found with provided username");
         return tweetMapper.entitiesToDtos(tweetRepository.findByAuthor(user.get()));
     }
@@ -115,7 +114,7 @@ public class TweetServiceImpl implements TweetService {
 
     @Override
     public List<TweetResponseDto> getTweetsWithUserMentions(String username) {
-        Optional<User> user = userRepository.findFirstByCredentialsUsername(username);
+        Optional<User> user = userRepository.findByCredentialsUsername(username);
         if (user.isEmpty()) throw new NotFoundException("no user found with provided username");
         return tweetMapper.entitiesToDtos(tweetRepository.findByAuthor(user.get()));
     }
