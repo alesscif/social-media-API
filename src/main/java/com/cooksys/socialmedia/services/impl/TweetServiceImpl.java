@@ -30,20 +30,15 @@ public class TweetServiceImpl implements TweetService {
     	Optional<User> user = userRepository.findByCredentialsUsername(username);
     	 if (user.isEmpty()) throw new NotFoundException("no user found with provided username");
     	 List<User> feedUsers=user.get().getFollowing();
-    	 List<Tweet> feed=new ArrayList<>();
-    	 for(User u : feedUsers)
-    	 {
+    	 List<Tweet> feed = new ArrayList<>();
+    	 for(User u : feedUsers) {
     		 for (Tweet t : u.getTweets()) {
-    			 feed.add(t);
-    		 if(t.getRepostOf()!=null)
-    			 feed.add(t.getRepostOf());
-    		 if(t.getInReplyTo()!=null)
-    			 feed.add(t.getInReplyTo());
-    		 }
+                 feed.add(t);
+                 feed.addAll(t.getReposts());
+                 feed.addAll(t.getReplies());
+             }
     	 }
     	 Collections.sort(feed, Comparator.comparing(Tweet::getPosted));
-    	 
-    	 
         return tweetMapper.entitiesToDtos(feed);
     }
    

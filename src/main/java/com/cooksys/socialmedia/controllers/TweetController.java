@@ -1,7 +1,6 @@
 package com.cooksys.socialmedia.controllers;
 
 import com.cooksys.socialmedia.dtos.TweetResponseDto;
-import com.cooksys.socialmedia.entities.Tweet;
 import com.cooksys.socialmedia.services.TweetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,5 +26,7 @@ public class TweetController {
 	public TweetResponseDto getTweet(@PathVariable Long tweetID) {
 		return tweetService.getTweet(tweetID);
 	}
+
+
 
 }
