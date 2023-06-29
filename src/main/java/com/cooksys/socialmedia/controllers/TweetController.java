@@ -3,7 +3,9 @@ package com.cooksys.socialmedia.controllers;
 import com.cooksys.socialmedia.dtos.ContextDto;
 import com.cooksys.socialmedia.dtos.TweetRequestDto;
 import com.cooksys.socialmedia.dtos.TweetResponseDto;
+import com.cooksys.socialmedia.dtos.UserResponseDto;
 import com.cooksys.socialmedia.services.TweetService;
+import com.cooksys.socialmedia.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +17,7 @@ import java.util.List;
 public class TweetController {
 	
 	private final TweetService tweetService;
+	private final UserService userService;
 
 	@GetMapping
 	public List<TweetResponseDto> getAllTweets() {
@@ -36,4 +39,20 @@ public class TweetController {
 		return tweetService.createTweet(tweetRequestDto);
 	}
 
+	@GetMapping(path="/{id}/reposts")
+	public List<TweetResponseDto> getReposts(@PathVariable Long id){
+		return tweetService.getReposts(id);
+	}
+	
+	@GetMapping(path="/{id}/replies")
+	public List<TweetResponseDto> getReplies(@PathVariable Long id) {
+		return tweetService.getReplies(id);
+		
+	}
+	
+	@GetMapping(path="/{id}/likes")
+    public List<UserResponseDto> getLikes(@PathVariable Long id) {
+    	return userService.getLikes(id);
+    	
+    }
 }

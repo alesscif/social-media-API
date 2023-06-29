@@ -176,12 +176,28 @@ public class TweetServiceImpl implements TweetService {
 
     @Override
     public List<TweetResponseDto> getReplies(Long tweetID) {
-        return null;
+    	 Optional<Tweet> tweet = tweetRepository.findByIdAndDeletedFalse(tweetID);
+         if (tweet.isEmpty()) throw new NotFoundException("no tweet found with provided id");
+         List <Tweet> replies=new ArrayList<>();
+         for(Tweet t: tweet.get().getReplies())
+         {	if(!t.isDeleted())
+        	 	replies.add(t);
+	
+         }
+         return  tweetMapper.entitiesToDtos(replies);
     }
 
     @Override
     public List<TweetResponseDto> getReposts(Long tweetID) {
-        return null;
+    	 Optional<Tweet> tweet = tweetRepository.findByIdAndDeletedFalse(tweetID);
+         if (tweet.isEmpty()) throw new NotFoundException("no tweet found with provided id");
+         List <Tweet> repost=new ArrayList<>();
+         for(Tweet t: tweet.get().getReposts())
+         {	if(!t.isDeleted())
+        	 	repost.add(t);
+	
+         }
+         return  tweetMapper.entitiesToDtos(repost);
     }
 
     @Override
