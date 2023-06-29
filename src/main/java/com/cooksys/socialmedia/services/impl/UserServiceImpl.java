@@ -2,18 +2,27 @@ package com.cooksys.socialmedia.services.impl;
 
 import com.cooksys.socialmedia.dtos.UserRequestDto;
 import com.cooksys.socialmedia.dtos.UserResponseDto;
+import com.cooksys.socialmedia.mappers.HashtagMapper;
+import com.cooksys.socialmedia.mappers.UserMapper;
+import com.cooksys.socialmedia.repositories.HashtagRepository;
+import com.cooksys.socialmedia.repositories.UserRepository;
 import com.cooksys.socialmedia.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Sort;
+
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+	
+	private final UserMapper userMapper;
+	private final UserRepository userRepository;
     @Override
     public List<UserResponseDto> getAllUsers() {
-        return null;
+    	return userMapper.entitiesToDtos(userRepository.findAll(Sort.by(Sort.Direction.DESC,"posted")));
     }
 
     @Override
