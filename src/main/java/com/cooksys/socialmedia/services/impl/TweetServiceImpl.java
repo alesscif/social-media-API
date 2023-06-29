@@ -11,9 +11,11 @@ import com.cooksys.socialmedia.mappers.TweetMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
+import java.util.ArrayList; 
 import java.util.List;
 import java.util.Optional;
+import java.util.Collections;
+import java.util.Comparator;
 
 @Service
 @RequiredArgsConstructor
@@ -25,8 +27,27 @@ public class TweetServiceImpl implements TweetService {
 
     @Override
     public List<TweetResponseDto> getFeed(String username) {
-        return null;
+    	Optional<User> user = userRepository.findFirstByCredentialsUsername(username);
+    	 if (user.isEmpty()) throw new NotFoundException("no user found with provided username");
+    	 List<User> feedUsers=user.get().getFollowing();
+    	 List<Tweet> feed=new ArrayList<>();
+    	 for(User u : feedUsers)
+    	 {
+    		 for (Tweet t : u.getTweets()) {
+    		 
+    			 feed.add(t);
+    		 if(t.getRepostOf()!=null)
+    			 feed.add(t.getRepostOf());
+    		 if(t.getInReplyTo()!=null)
+    			 feed.add(t.getInReplyTo());
+    		 }
+    	 }
+    	 Collections.sort(feed, Comparator.comparing(Tweet::getPosted));
+    	 
+    	 
+        return tweetMapper.entitiesToDtos(feed);
     }
+   
 
     @Override
     public List<TweetResponseDto> getTweets(String username) {
