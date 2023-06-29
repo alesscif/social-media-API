@@ -1,5 +1,6 @@
 package com.cooksys.socialmedia.controllers;
 
+import com.cooksys.socialmedia.dtos.ContextDto;
 import com.cooksys.socialmedia.dtos.TweetResponseDto;
 import com.cooksys.socialmedia.services.TweetService;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +24,13 @@ public class TweetController {
 	}
 
 	@GetMapping(path="/{id}")
-	public TweetResponseDto getTweet(@PathVariable Long tweetID) {
-		return tweetService.getTweet(tweetID);
+	public TweetResponseDto getTweet(@PathVariable Long id) {
+		return tweetService.getTweet(id);
+	}
+	
+	@GetMapping(path="/{id}/context")
+	public ContextDto getContext(@PathVariable Long id) {
+		return tweetService.getContext(id);
 	}
 
 }
