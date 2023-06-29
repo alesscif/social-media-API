@@ -10,7 +10,7 @@ import java.util.List;
 @Repository
 public interface TweetRepository extends JpaRepository<Tweet, Long> {
 
-    List<Tweet> findByAuthor(User author);
+    List<Tweet> findByAuthorOrderByPostedAsc(User author);
 
 }
 

@@ -11,8 +11,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ValidateServiceImpl implements ValidateService {
 
-    private HashtagRepository hashtagRepository;
-    private UserRepository userRepository;
+    private final HashtagRepository hashtagRepository;
+    private final UserRepository userRepository;
 
     @Override
     public boolean hashtagExists(String label) {

@@ -19,9 +19,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private UserRepository userRepository;
-    private UserMapper userMapper;
-    private TweetRepository tweetRepository;
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
+    private final TweetRepository tweetRepository;
 
     @Override
     public List<UserResponseDto> getAllUsers() {
@@ -35,7 +35,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponseDto getUser(String username) {
-        return null;
+        Optional<User> user = userRepository.findByCredentialsUsernameAndDeletedFalse(username);
+        if (user.isEmpty()) throw new NotFoundException("no user found with provided username");
+        return userMapper.entityToDto(user.get());
     }
 
     @Override
@@ -60,14 +62,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserResponseDto> getFollowers(String username) {
-        Optional<User> user = userRepository.findByCredentialsUsername(username);
+        Optional<User> user = userRepository.findByCredentialsUsernameAndDeletedFalse(username);
         if (user.isEmpty()) throw new NotFoundException("no user found with provided username");
         return userMapper.entitiesToDtos(user.get().getFollowers());
     }
 
     @Override
     public List<UserResponseDto> getFollowing(String username) {
-        Optional<User> user = userRepository.findByCredentialsUsername(username);
+        Optional<User> user = userRepository.findByCredentialsUsernameAndDeletedFalse(username);
         if (user.isEmpty()) throw new NotFoundException("no user found with provided username");
         return userMapper.entitiesToDtos(user.get().getFollowing());
     }

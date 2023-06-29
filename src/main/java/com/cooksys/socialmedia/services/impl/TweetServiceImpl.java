@@ -27,27 +27,27 @@ public class TweetServiceImpl implements TweetService {
 
     @Override
     public List<TweetResponseDto> getFeed(String username) {
-    	Optional<User> user = userRepository.findByCredentialsUsername(username);
+    	Optional<User> user = userRepository.findByCredentialsUsernameAndDeletedFalse(username);
     	 if (user.isEmpty()) throw new NotFoundException("no user found with provided username");
     	 List<User> feedUsers=user.get().getFollowing();
     	 List<Tweet> feed = new ArrayList<>();
     	 for(User u : feedUsers) {
-    		 for (Tweet t : u.getTweets()) {
-                 feed.add(t);
-                 feed.addAll(t.getReposts());
-                 feed.addAll(t.getReplies());
-             }
+//    		 for (Tweet t : u.getTweets()) {
+//                 feed.add(t);
+//                 feed.addAll(t.getReposts());
+//                 feed.addAll(t.getReplies());
+//             }
+             feed.addAll(tweetRepository.findByAuthorOrderByPostedAsc(u));
     	 }
-    	 Collections.sort(feed, Comparator.comparing(Tweet::getPosted));
         return tweetMapper.entitiesToDtos(feed);
     }
    
 
     @Override
     public List<TweetResponseDto> getTweets(String username) {
-        Optional<User> user = userRepository.findByCredentialsUsername(username);
+        Optional<User> user = userRepository.findByCredentialsUsernameAndDeletedFalse(username);
         if (user.isEmpty()) throw new NotFoundException("no user found with provided username");
-        return tweetMapper.entitiesToDtos(tweetRepository.findByAuthor(user.get()));
+        return tweetMapper.entitiesToDtos(tweetRepository.findByAuthorOrderByPostedAsc(user.get()));
     }
 
     @Override
@@ -109,9 +109,9 @@ public class TweetServiceImpl implements TweetService {
 
     @Override
     public List<TweetResponseDto> getTweetsWithUserMentions(String username) {
-        Optional<User> user = userRepository.findByCredentialsUsername(username);
+        Optional<User> user = userRepository.findByCredentialsUsernameAndDeletedFalse(username);
         if (user.isEmpty()) throw new NotFoundException("no user found with provided username");
-        return tweetMapper.entitiesToDtos(tweetRepository.findByAuthor(user.get()));
+        return tweetMapper.entitiesToDtos(tweetRepository.findByAuthorOrderByPostedAsc(user.get()));
     }
 
 }
