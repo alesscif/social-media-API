@@ -14,16 +14,17 @@ import org.hibernate.annotations.Where;
 @Entity
 @NoArgsConstructor
 @Data
-@Table(name = "tweet")
-@SQLDelete(sql = "UPDATE tweet SET deleted = true WHERE id=?")
-@Where(clause = "deleted=false")
+@Table(name="tweet")
+@SQLDelete(sql="UPDATE tweet SET deleted = true WHERE id=?")
+@Where(clause="deleted=false")
 public class Tweet {
 	
 	@Id
 	@GeneratedValue
 	private Long id;
-	
-	@Column(nullable = false)
+
+	@ManyToOne
+	@JoinColumn(name="tweets", nullable = false)
 	private User author;
 	
 	@CreationTimestamp
@@ -33,14 +34,18 @@ public class Tweet {
 	private String content;
 	
 	private boolean deleted = Boolean.FALSE;
+
+	@OneToOne
+	private Tweet tweet;
+
+	@OneToOne(mappedBy="tweet")
+	private Tweet inReplyTo;
+
+	@OneToOne(mappedBy="tweet")
+	private Tweet repostOf;
 	
-	private List <Long> inReplyTo;
-	
-	private List <Long> repostOf;
-	
-	@ManyToMany
-    @JoinTable(name="tweet_hashtags")
-	private List <Hashtag> hashtags;
+	@ManyToMany(mappedBy="tweets")
+	private List<Hashtag> hashtags;
 
 	@ManyToMany
 	@JoinTable(name="user_mentions",
@@ -48,7 +53,7 @@ public class Tweet {
 	inverseJoinColumns = @JoinColumn(name="tweet_id"))
 	private List<User> mentionedUsers;
 	
-	@ManyToMany (mappedBy = "likes")
+	@ManyToMany(mappedBy="likedTweets")
 	private List<User> likedBy;
 
 }

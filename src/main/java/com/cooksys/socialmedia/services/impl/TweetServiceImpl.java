@@ -30,7 +30,7 @@ public class TweetServiceImpl implements TweetService {
 
     @Override
     public List<TweetResponseDto> getTweets(String username) {
-        Optional<User> user = userRepository.findFirstByUsername(username);
+        Optional<User> user = userRepository.findFirstByCredentialsUsername(username);
         if (user.isEmpty()) throw new NotFoundException("no user found with provided username");
         return tweetMapper.entitiesToDtos(tweetRepository.findByAuthor(user.get()));
     }
@@ -94,7 +94,7 @@ public class TweetServiceImpl implements TweetService {
 
     @Override
     public List<TweetResponseDto> getTweetsWithUserMentions(String username) {
-        Optional<User> user = userRepository.findFirstByUsername(username);
+        Optional<User> user = userRepository.findFirstByCredentialsUsername(username);
         if (user.isEmpty()) throw new NotFoundException("no user found with provided username");
         return tweetMapper.entitiesToDtos(tweetRepository.findByAuthor(user.get()));
     }
