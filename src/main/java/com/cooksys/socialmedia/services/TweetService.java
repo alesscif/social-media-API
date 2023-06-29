@@ -5,7 +5,6 @@ import com.cooksys.socialmedia.dtos.*;
 import java.util.List;
 
 public interface TweetService {
-
     List<TweetResponseDto> getFeed(String username);
     List<TweetResponseDto> getTweets(String username);
     List<TweetResponseDto> getTweetsWithLabel(String label);
@@ -20,6 +19,5 @@ public interface TweetService {
     List<TweetResponseDto> getReplies(Long tweetID);
     List<TweetResponseDto> getReposts(Long tweetID);
     List<TweetResponseDto> getTweetsWithUserMentions(String username);
-
 
 }

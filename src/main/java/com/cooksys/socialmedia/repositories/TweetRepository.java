@@ -10,15 +10,7 @@ import java.util.Optional;
 
 @Repository
 public interface TweetRepository extends JpaRepository<Tweet, Long> {
-
-<<<<<<< Updated upstream
-    List<Tweet> findByAuthorAndDeletedFalseOrderByPostedAsc(User author);
+    List<Tweet> findByAuthorAndDeletedFalse(User author);
     Optional<Tweet> findByIdAndDeletedFalse(Long id);
-    
-=======
-    List<Tweet> findByAuthorOrderByPostedAscAndDeletedFalse(User author);
-    Optional<Tweet> findByIdAndDeletedFalse(Long id);
-
->>>>>>> Stashed changes
 }
 
