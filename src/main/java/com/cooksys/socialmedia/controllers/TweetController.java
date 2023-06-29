@@ -66,13 +66,13 @@ public class TweetController {
 	}
 	
 	@PostMapping (path = "/{id}/reply")
-	public TweetResponseDto reply(@RequestBody Long id, @RequestBody String content, @RequestBody CredentialsDto credentials ) {
+	public TweetResponseDto reply(@PathVariable Long id, @RequestBody String content, @RequestBody CredentialsDto credentials ) {
 		return tweetService.reply(id, content,credentials);
 	}
 	
 	@PostMapping (path = "/{id}/repost")
-	public TweetResponseDto repost(@RequestBody Long tweetID, @RequestBody CredentialsDto credentials) {
-		return tweetService.repost(tweetID,credentials);
+	public TweetResponseDto repost(@PathVariable Long id, @RequestBody CredentialsDto credentials) {
+		return tweetService.repost(id,credentials);
 	}
 
 }
