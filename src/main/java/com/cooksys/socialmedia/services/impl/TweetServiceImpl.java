@@ -11,11 +11,8 @@ import com.cooksys.socialmedia.mappers.TweetMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList; 
-import java.util.List;
-import java.util.Optional;
-import java.util.Collections;
-import java.util.Comparator;
+
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -37,7 +34,7 @@ public class TweetServiceImpl implements TweetService {
 //                 feed.addAll(t.getReposts());
 //                 feed.addAll(t.getReplies());
 //             }
-             feed.addAll(tweetRepository.findByAuthorOrderByPostedAsc(u));
+             feed.addAll(tweetRepository.findByAuthorAndDeletedFalseOrderByPostedAsc(u));
     	 }
         return tweetMapper.entitiesToDtos(feed);
     }
@@ -47,7 +44,7 @@ public class TweetServiceImpl implements TweetService {
     public List<TweetResponseDto> getTweets(String username) {
         Optional<User> user = userRepository.findByCredentialsUsernameAndDeletedFalse(username);
         if (user.isEmpty()) throw new NotFoundException("no user found with provided username");
-        return tweetMapper.entitiesToDtos(tweetRepository.findByAuthorOrderByPostedAsc(user.get()));
+        return tweetMapper.entitiesToDtos(tweetRepository.findByAuthorAndDeletedFalseOrderByPostedAsc(user.get()));
     }
 
     @Override
@@ -94,7 +91,34 @@ public class TweetServiceImpl implements TweetService {
 
     @Override
     public ContextDto getContext(Long tweetID) {
-        return null;
+        Optional<Tweet> tweet = tweetRepository.findByIdAndDeletedFalse(tweetID);
+        if (tweet.isEmpty()) throw new NotFoundException("no tweet found with provided id");
+        ContextDto context = new ContextDto();
+        context.setTarget(tweetMapper.entityToDto(tweet.get()));
+
+        List <Tweet> beforeT= new ArrayList<>();
+        Tweet bt = tweet.get().getInReplyTo();
+        while(bt != null) {
+            beforeT.add(bt);
+            bt = bt.getInReplyTo();
+        }
+        beforeT.sort( Comparator.comparing(Tweet::getPosted));
+        context.setBefore(tweetMapper.entitiesToDtos(beforeT));
+
+        List <Tweet> afterT= new ArrayList<>();
+        Stack<Tweet> stack = new Stack<>();
+        stack.push(tweet.get());
+        while(!stack.isEmpty()) {
+            List<Tweet> replies = stack.pop().getReplies();
+            for (Tweet at : replies) {
+                stack.push(at);
+                afterT.add(at);
+            }
+        }
+        afterT.sort(Comparator.comparing(Tweet::getPosted));
+        context.setAfter(tweetMapper.entitiesToDtos(afterT));
+
+        return context;
     }
 
     @Override
@@ -111,7 +135,7 @@ public class TweetServiceImpl implements TweetService {
     public List<TweetResponseDto> getTweetsWithUserMentions(String username) {
         Optional<User> user = userRepository.findByCredentialsUsernameAndDeletedFalse(username);
         if (user.isEmpty()) throw new NotFoundException("no user found with provided username");
-        return tweetMapper.entitiesToDtos(tweetRepository.findByAuthorOrderByPostedAsc(user.get()));
+        return tweetMapper.entitiesToDtos(tweetRepository.findByAuthorAndDeletedFalseOrderByPostedAsc(user.get()));
     }
 
 }
