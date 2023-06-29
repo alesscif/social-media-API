@@ -4,6 +4,7 @@ import com.cooksys.socialmedia.dtos.*;
 import com.cooksys.socialmedia.entities.Hashtag;
 import com.cooksys.socialmedia.entities.Tweet;
 import com.cooksys.socialmedia.entities.User;
+import com.cooksys.socialmedia.exceptions.NotAuthorizedException;
 import com.cooksys.socialmedia.exceptions.NotFoundException;
 import com.cooksys.socialmedia.repositories.HashtagRepository;
 import com.cooksys.socialmedia.repositories.TweetRepository;
@@ -121,7 +122,19 @@ public class TweetServiceImpl implements TweetService {
 
     @Override
     public TweetResponseDto deleteTweet(Long tweetID, CredentialsDto credentials) {
-        return null;
+        Optional<Tweet> tweet = tweetRepository.findByIdAndDeletedFalse(tweetID);
+
+        if (tweet.isEmpty())
+            throw new NotFoundException("no tweet found with provided id");
+
+        User author = tweet.get().getAuthor();
+
+        if (!author.getCredentials().getUsername().equals(credentials.getUsername())
+                || !author.getCredentials().getPassword().equals(credentials.getPassword()))
+            throw new NotAuthorizedException("unauthorized");
+
+        tweet.get().setDeleted(true);
+        return tweetMapper.entityToDto(tweetRepository.saveAndFlush(tweet.get()));
     }
 
     @Override

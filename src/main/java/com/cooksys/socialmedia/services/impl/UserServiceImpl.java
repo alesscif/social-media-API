@@ -70,8 +70,8 @@ public class UserServiceImpl implements UserService {
         if (user.isEmpty())
             throw new NotFoundException("no user found with provided username");
 
-        if (!user.get().getCredentials().getPassword().equals(credentials.getUsername())
-                || !user.get().getCredentials().getUsername().equals(credentials.getPassword()))
+        if (!user.get().getCredentials().getUsername().equals(credentials.getUsername())
+                || !user.get().getCredentials().getPassword().equals(credentials.getPassword()))
             throw new NotAuthorizedException("unauthorized");
 
         user.get().setDeleted(true);

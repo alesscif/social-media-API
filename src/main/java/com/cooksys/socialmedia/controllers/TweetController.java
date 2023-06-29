@@ -1,6 +1,7 @@
 package com.cooksys.socialmedia.controllers;
 
 import com.cooksys.socialmedia.dtos.ContextDto;
+import com.cooksys.socialmedia.dtos.CredentialsDto;
 import com.cooksys.socialmedia.dtos.TweetRequestDto;
 import com.cooksys.socialmedia.dtos.TweetResponseDto;
 import com.cooksys.socialmedia.services.TweetService;
@@ -34,6 +35,11 @@ public class TweetController {
 	@PostMapping
 	public TweetResponseDto createTweet(@RequestBody TweetRequestDto tweetRequestDto) {
 		return tweetService.createTweet(tweetRequestDto);
+	}
+
+	@DeleteMapping(path="/{id}")
+	public TweetResponseDto deleteTweet(@PathVariable Long id, @RequestBody CredentialsDto credentials) {
+		return tweetService.deleteTweet(id, credentials);
 	}
 
 }
