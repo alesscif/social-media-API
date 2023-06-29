@@ -48,9 +48,12 @@ public class UserController {
         return tweetService.getFeed(username);
     }
 
+    
+
     @PatchMapping(path="/@{username}")
     public UserResponseDto updateUser(@PathVariable String username, @RequestBody UserRequestDto updateData) {
         return userService.updateUser(username, updateData);
     }
+
 
 }

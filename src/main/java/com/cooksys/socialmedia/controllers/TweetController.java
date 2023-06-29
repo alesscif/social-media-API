@@ -1,9 +1,14 @@
 package com.cooksys.socialmedia.controllers;
 
 import com.cooksys.socialmedia.dtos.ContextDto;
+import com.cooksys.socialmedia.dtos.CredentialsDto;
+import com.cooksys.socialmedia.dtos.HashtagDto;
 import com.cooksys.socialmedia.dtos.TweetRequestDto;
 import com.cooksys.socialmedia.dtos.TweetResponseDto;
+import com.cooksys.socialmedia.dtos.UserResponseDto;
+import com.cooksys.socialmedia.services.HashtagService;
 import com.cooksys.socialmedia.services.TweetService;
+import com.cooksys.socialmedia.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +20,8 @@ import java.util.List;
 public class TweetController {
 	
 	private final TweetService tweetService;
+	private final UserService userService;
+	private final HashtagService hashtagService;
 
 	@GetMapping
 	public List<TweetResponseDto> getAllTweets() {
@@ -34,6 +41,38 @@ public class TweetController {
 	@PostMapping
 	public TweetResponseDto createTweet(@RequestBody TweetRequestDto tweetRequestDto) {
 		return tweetService.createTweet(tweetRequestDto);
+	}
+
+	@GetMapping(path="/{id}/reposts")
+	public List<TweetResponseDto> getReposts(@PathVariable Long id){
+		return tweetService.getReposts(id);
+	}
+	
+	@GetMapping(path="/{id}/replies")
+	public List<TweetResponseDto> getReplies(@PathVariable Long id) {
+		return tweetService.getReplies(id);
+		
+	}
+	
+	@GetMapping(path="/{id}/likes")
+    public List<UserResponseDto> getLikes(@PathVariable Long id) {
+    	return userService.getLikes(id);
+    	
+    }
+	
+	@GetMapping (path = "/{id}/tags")
+	public List<HashtagDto> getTags(@PathVariable Long id) {
+		return hashtagService.getTags(id);
+	}
+	
+	@PostMapping (path = "/{id}/reply")
+	public TweetResponseDto reply(@RequestBody Long tweetID, @RequestBody String content, @RequestBody CredentialsDto credentials ) {
+		return tweetService.reply(tweetID, content,credentials);
+	}
+	
+	@PostMapping (path = "/{id}/repost")
+	public TweetResponseDto repost(@RequestBody Long tweetID, @RequestBody CredentialsDto credentials) {
+		return tweetService.repost(tweetID,credentials);
 	}
 
 }

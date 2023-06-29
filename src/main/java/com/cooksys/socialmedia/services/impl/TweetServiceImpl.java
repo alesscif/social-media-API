@@ -55,7 +55,13 @@ public class TweetServiceImpl implements TweetService {
 
     @Override
     public List<TweetResponseDto> getTweetsWithLabel(String label) {
-        return null;
+    	Optional<Hashtag> hashtag = hashtagRepository.findByLabel(label);
+    	if (hashtag.isEmpty()) throw new NotFoundException("no hashtag found with provided label");
+    	List <Tweet> hTweets= hashtag.get().getTweets();
+    	
+    	hTweets.sort(Comparator.comparing(Tweet::getPosted));
+    	return tweetMapper.entitiesToDtos(hTweets);
+    	
     }
 
     @Override
@@ -131,12 +137,43 @@ public class TweetServiceImpl implements TweetService {
 
     @Override
     public TweetResponseDto reply(Long tweetID, String content, CredentialsDto credentials) {
-        return null;
+    	Optional<Tweet> original=tweetRepository.findByIdAndDeletedFalse(tweetID);
+    	if (original.isEmpty()) throw new NotFoundException("no tweet found with provided id");
+    	Optional<User> replier=userRepository.findByCredentialsUsernameAndDeletedFalse(credentials.getUsername());
+    	if (replier.isEmpty()) throw new NotFoundException("no user found with provided username");
+    	List <Tweet> replies=original.get().getReplies();
+    	
+   	 Tweet replyy = new Tweet();
+        replyy.setAuthor(replier.get());
+
+        replyy.setContent(content);
+        replyy.setMentionedUsers(original.get().getMentionedUsers());
+        replyy.setHashtags(original.get().getHashtags());
+        replies.add(replyy);
+        tweetRepository.saveAndFlush(original.get());
+        
+        return tweetMapper.entityToDto(tweetRepository.saveAndFlush(replyy));
     }
 
     @Override
     public TweetResponseDto repost(Long tweetID, CredentialsDto credentials) {
-        return null;
+    	Optional<Tweet> original=tweetRepository.findByIdAndDeletedFalse(tweetID);
+    	if (original.isEmpty()) throw new NotFoundException("no tweet found with provided id");
+    	Optional<User> reposter=userRepository.findByCredentialsUsernameAndDeletedFalse(credentials.getUsername());
+    	if (reposter.isEmpty()) throw new NotFoundException("no user found with provided username");
+    	List <Tweet> reposts=original.get().getReposts();
+    	
+    	 Tweet repos = new Tweet();
+         repos.setAuthor(reposter.get());
+
+         String content = original.get().getContent();
+         repos.setContent(content);
+         repos.setMentionedUsers(original.get().getMentionedUsers());
+         repos.setHashtags(original.get().getHashtags());
+         reposts.add(repos);
+         tweetRepository.saveAndFlush(original.get());
+         
+         return tweetMapper.entityToDto(tweetRepository.saveAndFlush(repos));
     }
 
     @Override
@@ -174,12 +211,28 @@ public class TweetServiceImpl implements TweetService {
 
     @Override
     public List<TweetResponseDto> getReplies(Long tweetID) {
-        return null;
+    	 Optional<Tweet> tweet = tweetRepository.findByIdAndDeletedFalse(tweetID);
+         if (tweet.isEmpty()) throw new NotFoundException("no tweet found with provided id");
+         List <Tweet> replies=new ArrayList<>();
+         for(Tweet t: tweet.get().getReplies())
+         {	if(!t.isDeleted())
+        	 	replies.add(t);
+	
+         }
+         return  tweetMapper.entitiesToDtos(replies);
     }
 
     @Override
     public List<TweetResponseDto> getReposts(Long tweetID) {
-        return null;
+    	 Optional<Tweet> tweet = tweetRepository.findByIdAndDeletedFalse(tweetID);
+         if (tweet.isEmpty()) throw new NotFoundException("no tweet found with provided id");
+         List <Tweet> repost=new ArrayList<>();
+         for(Tweet t: tweet.get().getReposts())
+         {	if(!t.isDeleted())
+        	 	repost.add(t);
+	
+         }
+         return  tweetMapper.entitiesToDtos(repost);
     }
 
     @Override
