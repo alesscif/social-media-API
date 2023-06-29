@@ -11,7 +11,7 @@ public interface UserService {
     List<UserResponseDto> getAllUsers();
     UserResponseDto createUser(UserRequestDto userToCreate);
     UserResponseDto getUser(String username);
-    UserResponseDto updateUser(UserRequestDto updateData);
+    UserResponseDto updateUser(String username, UserRequestDto updateData);
     UserResponseDto deleteUser(UserRequestDto userToDelete);
     void followUser(UserRequestDto userToFollow);
     void unfollowUser(UserRequestDto userToUnfollow);

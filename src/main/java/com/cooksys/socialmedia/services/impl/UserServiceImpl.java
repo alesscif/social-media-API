@@ -4,7 +4,9 @@ import com.cooksys.socialmedia.dtos.UserRequestDto;
 import com.cooksys.socialmedia.dtos.UserResponseDto;
 import com.cooksys.socialmedia.entities.Tweet;
 import com.cooksys.socialmedia.entities.User;
+import com.cooksys.socialmedia.exceptions.NotAuthorizedException;
 import com.cooksys.socialmedia.exceptions.NotFoundException;
+import com.cooksys.socialmedia.mappers.ProfileMapper;
 import com.cooksys.socialmedia.mappers.UserMapper;
 import com.cooksys.socialmedia.repositories.TweetRepository;
 import com.cooksys.socialmedia.repositories.UserRepository;
@@ -22,6 +24,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final TweetRepository tweetRepository;
+    private final ProfileMapper profileMapper;
 
     @Override
     public List<UserResponseDto> getAllUsers() {
@@ -41,8 +44,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDto updateUser(UserRequestDto updateData) {
-        return null;
+    public UserResponseDto updateUser(String username, UserRequestDto updateData) {
+        Optional<User> user = userRepository.findByCredentialsUsernameAndDeletedFalse(username);
+
+        if (user.isEmpty())
+            throw new NotFoundException("no user found with provided username");
+
+        String providedUsername = updateData.getCredentials().getUsername();
+        String providedPassword = updateData.getCredentials().getPassword();
+
+        if (!user.get().getCredentials().getPassword().equals(providedPassword)
+                || !user.get().getCredentials().getUsername().equals(providedUsername))
+            throw new NotAuthorizedException("unauthorized");
+
+        user.get().setProfile(profileMapper.dtoToEntity(updateData.getProfile()));
+        return userMapper.entityToDto(userRepository.saveAndFlush(user.get()));
     }
 
     @Override
