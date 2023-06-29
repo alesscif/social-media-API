@@ -1,14 +1,12 @@
 package com.cooksys.socialmedia.controllers;
 
 import com.cooksys.socialmedia.dtos.TweetResponseDto;
+import com.cooksys.socialmedia.dtos.UserRequestDto;
 import com.cooksys.socialmedia.dtos.UserResponseDto;
 import com.cooksys.socialmedia.services.TweetService;
 import com.cooksys.socialmedia.services.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -51,4 +49,11 @@ public class UserController {
     }
 
     
+
+    @PatchMapping(path="/@{username}")
+    public UserResponseDto updateUser(@PathVariable String username, @RequestBody UserRequestDto updateData) {
+        return userService.updateUser(username, updateData);
+    }
+
+
 }
