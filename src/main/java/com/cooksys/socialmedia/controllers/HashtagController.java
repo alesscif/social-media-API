@@ -9,9 +9,7 @@ import com.cooksys.socialmedia.services.TweetService;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
-import com.cooksys.socialmedia.services.HashtagService;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,7 +27,7 @@ public class HashtagController {
 		return hashtagService.getAllHashtags();
 	}
 
-	@GetMapping (path = "/{label}")
+	@GetMapping(path="/{label}")
 	public List<TweetResponseDto> getTweetsWithLabel(@PathVariable String label) {
 		return tweetService.getTweetsWithLabel(label);
 	}
