@@ -1,13 +1,19 @@
 package com.cooksys.socialmedia.services.impl;
 
 import com.cooksys.socialmedia.dtos.*;
+import com.cooksys.socialmedia.entities.Tweet;
+import com.cooksys.socialmedia.entities.User;
+import com.cooksys.socialmedia.exceptions.NotFoundException;
 import com.cooksys.socialmedia.repositories.TweetRepository;
+import com.cooksys.socialmedia.repositories.UserRepository;
 import com.cooksys.socialmedia.services.TweetService;
 import com.cooksys.socialmedia.mappers.TweetMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -15,6 +21,7 @@ public class TweetServiceImpl implements TweetService {
 
     private TweetRepository tweetRepository;
     private TweetMapper tweetMapper;
+    private UserRepository userRepository;
 
     @Override
     public List<TweetResponseDto> getFeed(String username) {
@@ -23,12 +30,9 @@ public class TweetServiceImpl implements TweetService {
 
     @Override
     public List<TweetResponseDto> getTweets(String username) {
-        return null;
-    }
-
-    @Override
-    public List<TweetResponseDto> getMentions(String username) {
-        return null;
+        Optional<User> user = userRepository.findFirstByCredentialsUsername(username);
+        if (user.isEmpty()) throw new NotFoundException("no user found with provided username");
+        return tweetMapper.entitiesToDtos(tweetRepository.findByAuthor(user.get()));
     }
 
     @Override
@@ -38,7 +42,7 @@ public class TweetServiceImpl implements TweetService {
 
     @Override
     public List<TweetResponseDto> getAllTweets() {
-        return tweetMapper.entitiesToDtos(tweetRepository.findAll());
+        return tweetMapper.entitiesToDtos(tweetRepository.findAll(Sort.by(Sort.Direction.DESC,"posted")));
     }
 
     @Override
@@ -48,7 +52,9 @@ public class TweetServiceImpl implements TweetService {
 
     @Override
     public TweetResponseDto getTweet(Long tweetID) {
-        return null;
+        Optional<Tweet> tweet = tweetRepository.findById(tweetID);
+        if (tweet.isEmpty()) throw new NotFoundException("no tweet found with provided id");
+        return tweetMapper.entityToDto(tweet.get());
     }
 
     @Override
@@ -58,7 +64,7 @@ public class TweetServiceImpl implements TweetService {
 
     @Override
     public void likeTweet(Long tweetId, CredentialsDto credentials) {
-
+        return;
     }
 
     @Override
@@ -84,6 +90,13 @@ public class TweetServiceImpl implements TweetService {
     @Override
     public List<TweetResponseDto> getReposts(Long tweetID) {
         return null;
+    }
+
+    @Override
+    public List<TweetResponseDto> getTweetsWithUserMentions(String username) {
+        Optional<User> user = userRepository.findFirstByCredentialsUsername(username);
+        if (user.isEmpty()) throw new NotFoundException("no user found with provided username");
+        return tweetMapper.entitiesToDtos(tweetRepository.findByAuthor(user.get()));
     }
 
 }

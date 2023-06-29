@@ -1,5 +1,6 @@
 package com.cooksys.socialmedia.services.impl;
 
+import com.cooksys.socialmedia.dtos.CredentialsDto;
 import com.cooksys.socialmedia.repositories.HashtagRepository;
 import com.cooksys.socialmedia.repositories.UserRepository;
 import com.cooksys.socialmedia.services.ValidateService;
@@ -20,7 +21,7 @@ public class ValidateServiceImpl implements ValidateService {
 
     @Override
     public boolean usernameExists(String username) {
-        return userRepository.existsByUsername(username);
+        return userRepository.existsByCredentialsUsername(username);
     }
 
     @Override
