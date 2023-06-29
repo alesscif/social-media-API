@@ -2,27 +2,30 @@ package com.cooksys.socialmedia.services.impl;
 
 import com.cooksys.socialmedia.dtos.UserRequestDto;
 import com.cooksys.socialmedia.dtos.UserResponseDto;
-import com.cooksys.socialmedia.mappers.HashtagMapper;
+import com.cooksys.socialmedia.entities.Tweet;
+import com.cooksys.socialmedia.entities.User;
+import com.cooksys.socialmedia.exceptions.NotFoundException;
 import com.cooksys.socialmedia.mappers.UserMapper;
-import com.cooksys.socialmedia.repositories.HashtagRepository;
+import com.cooksys.socialmedia.repositories.TweetRepository;
 import com.cooksys.socialmedia.repositories.UserRepository;
 import com.cooksys.socialmedia.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.data.domain.Sort;
-
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-	
-	private final UserMapper userMapper;
-	private final UserRepository userRepository;
+
+    private UserRepository userRepository;
+    private UserMapper userMapper;
+    private TweetRepository tweetRepository;
+
     @Override
     public List<UserResponseDto> getAllUsers() {
-    	return userMapper.entitiesToDtos(userRepository.findAll(Sort.by(Sort.Direction.DESC,"posted")));
+        return null;
     }
 
     @Override
@@ -57,11 +60,29 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserResponseDto> getFollowers(String username) {
-        return null;
+        Optional<User> user = userRepository.findFirstByUsername(username);
+        if (user.isEmpty()) throw new NotFoundException("no user found with provided username");
+        return userMapper.entitiesToDtos(user.get().getFollowers());
     }
 
     @Override
     public List<UserResponseDto> getFollowing(String username) {
+        Optional<User> user = userRepository.findFirstByUsername(username);
+        if (user.isEmpty()) throw new NotFoundException("no user found with provided username");
+        return userMapper.entitiesToDtos(user.get().getFollowing());
+    }
+
+    @Override
+    public List<UserResponseDto> getMentions(Long tweetID) {
+        Optional<Tweet> tweet = tweetRepository.findById(tweetID);
+        if (tweet.isEmpty()) throw new NotFoundException("no tweet found with provided id");
+        return userMapper.entitiesToDtos(tweet.get().getMentionedUsers());
+    }
+
+    @Override
+    public List<UserResponseDto> getLikes(Long tweetID) {
         return null;
     }
+
+
 }

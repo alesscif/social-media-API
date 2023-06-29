@@ -16,5 +16,6 @@ public interface UserService {
     void unfollowUser(UserRequestDto userToUnfollow);
     List<UserResponseDto> getFollowers(String username);
     List<UserResponseDto> getFollowing(String username);
-
+    List<UserResponseDto> getMentions(Long tweetID);
+    List<UserResponseDto> getLikes(Long tweetID);
 }
