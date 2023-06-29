@@ -21,9 +21,9 @@ import java.util.Comparator;
 @RequiredArgsConstructor
 public class TweetServiceImpl implements TweetService {
 
-    private TweetRepository tweetRepository;
-    private TweetMapper tweetMapper;
-    private UserRepository userRepository;
+    private final TweetRepository tweetRepository;
+    private final TweetMapper tweetMapper;
+    private final UserRepository userRepository;
 
     @Override
     public List<TweetResponseDto> getFeed(String username) {
