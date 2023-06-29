@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserResponseDto> getMentions(Long tweetID) {
+    public List<UserResponseDto> getMentionedUsers(Long tweetID) {
         Optional<Tweet> tweet = tweetRepository.findById(tweetID);
         if (tweet.isEmpty()) throw new NotFoundException("no tweet found with provided id");
         return userMapper.entitiesToDtos(tweet.get().getMentionedUsers());
