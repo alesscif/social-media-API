@@ -4,6 +4,7 @@ import com.cooksys.socialmedia.dtos.*;
 import com.cooksys.socialmedia.entities.Hashtag;
 import com.cooksys.socialmedia.entities.Tweet;
 import com.cooksys.socialmedia.entities.User;
+import com.cooksys.socialmedia.exceptions.NotAuthorizedException;
 import com.cooksys.socialmedia.exceptions.NotFoundException;
 import com.cooksys.socialmedia.repositories.HashtagRepository;
 import com.cooksys.socialmedia.repositories.TweetRepository;
@@ -136,18 +137,28 @@ public class TweetServiceImpl implements TweetService {
     }
 
     @Override
-    public TweetResponseDto reply(Long tweetID, String content, CredentialsDto credentials) {
-    	Optional<Tweet> original=tweetRepository.findByIdAndDeletedFalse(tweetID);
-    	if (original.isEmpty()) throw new NotFoundException("no tweet found with provided id");
-    	Optional<User> replier=userRepository.findByCredentialsUsernameAndDeletedFalse(credentials.getUsername());
-    	if (replier.isEmpty()) throw new NotFoundException("no user found with provided username");
-    	List <Tweet> replies=original.get().getReplies();
-    	
-   	 Tweet replyy = new Tweet();
-        replyy.setAuthor(replier.get());
+    public TweetResponseDto reply(Long tweetID, TweetRequestDto tweetRequest) {
+        // replying user exists?
+        Optional<User> replier = userRepository.findByCredentialsUsernameAndDeletedFalse(tweetRequest.getCredentials().getUsername());
+        if (replier.isEmpty()) throw new NotFoundException("no user found with provided credentials");
 
-        replyy.setContent(content);
-       
+        String providedPassword = tweetRequest.getCredentials().getPassword();
+
+        // credentials ok?
+        if (!replier.get().getCredentials().getPassword().equals(providedPassword))
+            throw new NotAuthorizedException("unauthorized");
+
+        // original tweet exists?
+        Optional<Tweet> original = tweetRepository.findByIdAndDeletedFalse(tweetID);
+        if (original.isEmpty()) throw new NotFoundException("no tweet found with provided id");
+
+        Tweet tweet = new Tweet();
+        // set author
+        tweet.setAuthor(replier.get());
+
+        String content = tweetRequest.getContent();
+        // set content
+        tweet.setContent(content);
 
         List<String> mentions = Pattern.compile("(@[a-zA-Z0-9]+)")
                 .matcher(content)
@@ -166,7 +177,9 @@ public class TweetServiceImpl implements TweetService {
             Optional<User> u = userRepository.findByCredentialsUsernameAndDeletedFalse(mention.substring(1));
             u.ifPresent(mentionedUsers::add);
         }
-        replyy.setMentionedUsers(mentionedUsers);
+
+        // set mentioned users
+        tweet.setMentionedUsers(mentionedUsers);
 
         List<Hashtag> tags = new ArrayList<>();
         for (String label : hashtags) {
@@ -180,11 +193,19 @@ public class TweetServiceImpl implements TweetService {
             }
             tags.add(h.get());
         }
-        replyy.setHashtags(tags);
-        replies.add(replyy);
+        // set hashtags
+        tweet.setHashtags(tags);
+
+        // add to replies to original
+        List<Tweet> replies = original.get().getReplies();
+        replies.add(tweet);
+
+        // save reply and original
+        tweetRepository.saveAndFlush(tweet);
         tweetRepository.saveAndFlush(original.get());
-        
-        return tweetMapper.entityToDto(tweetRepository.saveAndFlush(replyy));
+
+        // return reply
+        return tweetMapper.entityToDto(tweet);
     }
 
     @Override

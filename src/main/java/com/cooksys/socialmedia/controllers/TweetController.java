@@ -6,6 +6,7 @@ import com.cooksys.socialmedia.dtos.HashtagDto;
 import com.cooksys.socialmedia.dtos.TweetRequestDto;
 import com.cooksys.socialmedia.dtos.TweetResponseDto;
 import com.cooksys.socialmedia.dtos.UserResponseDto;
+import com.cooksys.socialmedia.entities.Tweet;
 import com.cooksys.socialmedia.services.HashtagService;
 import com.cooksys.socialmedia.services.TweetService;
 import com.cooksys.socialmedia.services.UserService;
@@ -66,11 +67,11 @@ public class TweetController {
 	}
 	
 	@PostMapping (path = "/{id}/reply")
-	public TweetResponseDto reply(@PathVariable Long id, @RequestBody String content, @RequestBody CredentialsDto credentials ) {
-		return tweetService.reply(id, content,credentials);
+	public TweetResponseDto reply(@PathVariable Long id, @RequestBody TweetRequestDto tweetRequest) {
+		return tweetService.reply(id, tweetRequest);
 	}
 	
-	@PostMapping (path = "/{id}/repost")
+	@PostMapping(path = "/{id}/repost")
 	public TweetResponseDto repost(@PathVariable Long id, @RequestBody CredentialsDto credentials) {
 		return tweetService.repost(id,credentials);
 	}

@@ -21,7 +21,7 @@ public class Tweet {
 	private Long id;
 
 	@ManyToOne
-	@JoinColumn(name="tweets", nullable = false)
+	@JoinColumn(nullable = false)
 	private User author;
 	
 	@CreationTimestamp
@@ -52,8 +52,8 @@ public class Tweet {
 
 	@ManyToMany
 	@JoinTable(name="user_mentions",
-	joinColumns = @JoinColumn(name="user_id"),
-	inverseJoinColumns = @JoinColumn(name="tweet_id"))
+	joinColumns = @JoinColumn(name="tweet_id"),
+	inverseJoinColumns = @JoinColumn(name="user_id"))
 	private List<User> mentionedUsers;
 	
 	@ManyToMany(mappedBy="likedTweets")

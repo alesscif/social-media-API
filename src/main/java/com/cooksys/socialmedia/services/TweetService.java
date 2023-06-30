@@ -13,7 +13,7 @@ public interface TweetService {
     TweetResponseDto getTweet(Long tweetID);
     TweetResponseDto deleteTweet(Long tweetID, CredentialsDto credentials);
     void likeTweet(Long tweetId, CredentialsDto credentials);
-    TweetResponseDto reply(Long tweetID, String content, CredentialsDto credentials);
+    TweetResponseDto reply(Long tweetID, TweetRequestDto tweetRequest);
     TweetResponseDto repost(Long tweetID, CredentialsDto credentials);
     ContextDto getContext(Long tweetID);
     List<TweetResponseDto> getReplies(Long tweetID);
