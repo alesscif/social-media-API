@@ -15,9 +15,8 @@ import com.cooksys.socialmedia.repositories.UserRepository;
 import com.cooksys.socialmedia.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import java.util.*;
 
-import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -115,7 +114,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserResponseDto> getLikes(Long tweetID) {
-        return null;
+    	Optional<Tweet> tweet = tweetRepository.findByIdAndDeletedFalse(tweetID);
+    	if (tweet.isEmpty()) throw new NotFoundException("no tweet found with provided id");
+    	List <User> users=new ArrayList<>();
+    			for(User u:tweet.get().getLikedBy())
+    			{
+    				if(!u.isDeleted()) users.add(u);
+    			}
+          return userMapper.entitiesToDtos(users);
+          
     }
 
 
