@@ -71,8 +71,8 @@ public class TweetController {
 	}
 	
 	@PostMapping(path = "/{id}/repost")
-	public TweetResponseDto repost(@PathVariable Long id, @RequestBody CredentialsDto credentials) {
-		return tweetService.repost(id,credentials);
+	public TweetResponseDto repost(@PathVariable Long id, @RequestBody TweetRequestDto tweetRequest) {
+		return tweetService.repost(id, tweetRequest);
 	}
 
 	@PostMapping(path="/{id}/like")
