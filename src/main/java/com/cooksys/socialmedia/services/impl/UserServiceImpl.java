@@ -20,8 +20,8 @@ import com.cooksys.socialmedia.services.ValidateService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Field;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 
@@ -48,8 +48,11 @@ public class UserServiceImpl implements UserService {
         if (credentials == null)
             throw new BadRequestException("missing required fields: username, password");
 
-         if (credentials.getUsername() == null || credentials.getPassword() == null)
-             throw new BadRequestException("missing required fields: username, password");
+        if (credentials.getUsername() == null)
+            throw new BadRequestException("missing required fields: username");
+
+        if (credentials.getPassword() == null)
+            throw new BadRequestException("missing required fields: password");
 
         Optional<User> user = userRepository.findByCredentialsUsernameAndDeletedTrue(credentials.getUsername());
         if (user.isPresent()) {
@@ -64,7 +67,7 @@ public class UserServiceImpl implements UserService {
         }
         if (!validateService.usernameIsAvailable(credentials.getUsername()))
             throw new ResourceExistsException("username already exists");
-        
+
         ProfileDto profile = userToCreate.getProfile();
         if (profile == null)
             throw new BadRequestException("missing required field: email");
@@ -233,12 +236,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserResponseDto> getLikes(Long tweetID) {
-    	Optional<Tweet> tweet = tweetRepository.findByIdAndDeletedFalse(tweetID);
-    	if (tweet.isEmpty()) throw new NotFoundException("no tweet found with provided id");
+        Optional<Tweet> tweet = tweetRepository.findByIdAndDeletedFalse(tweetID);
+        if (tweet.isEmpty()) throw new NotFoundException("no tweet found with provided id");
 
-    	return userMapper.entitiesToDtos(tweet.get().getLikedBy().stream()
+        return userMapper.entitiesToDtos(tweet.get().getLikedBy().stream()
                 .filter(Predicate.not(User::isDeleted))
-    	        .toList());
+                .toList());
     }
 
 }

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ControllerAdvice(basePackages = { "com.cooksys.socialmedia.controllers" })
+@ControllerAdvice(basePackages = {"com.cooksys.socialmedia.controllers"})
 @ResponseBody
 public class SocialMediaControllerAdvice {
 
@@ -38,8 +38,6 @@ public class SocialMediaControllerAdvice {
     public ErrorDto handleResourceExistsException(ResourceExistsException resourceExistsException) {
         return new ErrorDto(resourceExistsException.getMessage());
     }
-
-
 
 
 }

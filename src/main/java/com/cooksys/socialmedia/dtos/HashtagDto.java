@@ -8,13 +8,13 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @Data
 public class HashtagDto {
-	
-	private String label;
 
-	
-	private Timestamp firstUsed;
+    private String label;
 
-	
-	private Timestamp lastUsed;
+
+    private Timestamp firstUsed;
+
+
+    private Timestamp lastUsed;
 
 }

@@ -1,62 +1,59 @@
 package com.cooksys.socialmedia.entities;
 
-import javax.persistence.*;
-
-import java.sql.Timestamp;
-import java.util.List;
-import org.hibernate.annotations.CreationTimestamp;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
+import org.hibernate.annotations.CreationTimestamp;
+
+import javax.persistence.*;
+import java.sql.Timestamp;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
 @Data
 public class Tweet {
-	
-	@Id
-	@GeneratedValue
-	private Long id;
 
-	@ManyToOne
-	@JoinColumn(nullable = false)
-	private User author;
-	
-	@CreationTimestamp
-	@Column(nullable = false)
-	private Timestamp posted;
+    @Id
+    @GeneratedValue
+    private Long id;
 
-	private String content;
-	
-	private boolean deleted = false;
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private User author;
 
-	@ManyToOne
-	private Tweet inReplyTo;
+    @CreationTimestamp
+    @Column(nullable = false)
+    private Timestamp posted;
 
-	@OneToMany(mappedBy = "inReplyTo")
-	private List<Tweet> replies;
+    private String content;
 
-	@ManyToOne
-	private Tweet repostOf;
+    private boolean deleted = false;
 
-	@OneToMany(mappedBy = "repostOf")
-	private List<Tweet> reposts;
-	
-	@ManyToMany
-	@JoinTable(name="tweet_hashtags",
-			joinColumns = @JoinColumn(name="tweet_id"),
-			inverseJoinColumns = @JoinColumn(name="hashtag_id"))
-	private List<Hashtag> hashtags;
+    @ManyToOne
+    private Tweet inReplyTo;
 
-	@ManyToMany
-	@JoinTable(name="user_mentions",
-	joinColumns = @JoinColumn(name="tweet_id"),
-	inverseJoinColumns = @JoinColumn(name="user_id"))
-	private List<User> mentionedUsers;
-	
-	@ManyToMany(mappedBy="likedTweets")
-	private List<User> likedBy;
+    @OneToMany(mappedBy = "inReplyTo")
+    private List<Tweet> replies;
+
+    @ManyToOne
+    private Tweet repostOf;
+
+    @OneToMany(mappedBy = "repostOf")
+    private List<Tweet> reposts;
+
+    @ManyToMany
+    @JoinTable(name = "tweet_hashtags",
+            joinColumns = @JoinColumn(name = "tweet_id"),
+            inverseJoinColumns = @JoinColumn(name = "hashtag_id"))
+    private List<Hashtag> hashtags;
+
+    @ManyToMany
+    @JoinTable(name = "user_mentions",
+            joinColumns = @JoinColumn(name = "tweet_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private List<User> mentionedUsers;
+
+    @ManyToMany(mappedBy = "likedTweets")
+    private List<User> likedBy;
 
 }

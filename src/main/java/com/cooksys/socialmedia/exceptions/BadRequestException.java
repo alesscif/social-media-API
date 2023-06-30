@@ -1,4 +1,5 @@
 package com.cooksys.socialmedia.exceptions;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

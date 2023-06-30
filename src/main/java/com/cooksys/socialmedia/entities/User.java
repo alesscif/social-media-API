@@ -6,8 +6,6 @@ import com.cooksys.socialmedia.entities.embeddable.Profile;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -17,7 +15,7 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @Data
-@Table(name="user_table")
+@Table(name = "user_table")
 public class User {
 
     @Id
@@ -39,19 +37,19 @@ public class User {
     private boolean deleted = false;
 
     @ManyToMany
-    @JoinTable(name="followers_following")
+    @JoinTable(name = "followers_following")
     private List<User> followers;
 
-    @ManyToMany(mappedBy="followers")
+    @ManyToMany(mappedBy = "followers")
     private List<User> following;
 
-    @OneToMany(mappedBy="author")
+    @OneToMany(mappedBy = "author")
     private List<Tweet> tweets;
 
     @ManyToMany
-    @JoinTable(name="user_likes",
-    joinColumns = @JoinColumn(name="user_id"),
-    inverseJoinColumns = @JoinColumn(name="tweet_id"))
+    @JoinTable(name = "user_likes",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "tweet_id"))
     private List<Tweet> likedTweets;
 
     @ManyToMany(mappedBy = "mentionedUsers")

@@ -3,14 +3,12 @@ package com.cooksys.socialmedia.dtos;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Timestamp;
-
 @NoArgsConstructor
 @Data
 public class TweetRequestDto {
-	
-	private String content;
 
-	private CredentialsDto credentials;
+    private String content;
+
+    private CredentialsDto credentials;
 
 }
