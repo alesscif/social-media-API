@@ -19,6 +19,11 @@ public class UserController {
     private final UserService userService;
     private final TweetService tweetService;
 
+    @GetMapping
+    public List<UserResponseDto> getAllUsers() {
+        return userService.getAllUsers();
+    }
+
     @GetMapping(path="/@{username}/followers")
     public List<UserResponseDto> getFollowers(@PathVariable String username) {
         return userService.getFollowers(username);
@@ -55,13 +60,13 @@ public class UserController {
     }
 
     @PostMapping(path="/@{username}/follow")
-    public void followUser(@PathVariable String id, @RequestBody CredentialsDto credentials) {
-        userService.followUser(id, credentials);
+    public void followUser(@PathVariable String username, @RequestBody CredentialsDto credentials) {
+        userService.followUser(username, credentials);
     }
 
     @PostMapping(path="/@{username}/unfollow")
-    public void unfollowUser(@PathVariable String id, @RequestBody CredentialsDto credentials) {
-        userService.unfollowUser(id, credentials);
+    public void unfollowUser(@PathVariable String username, @RequestBody CredentialsDto credentials) {
+        userService.unfollowUser(username, credentials);
     }
 
     @PatchMapping(path="/@{username}")

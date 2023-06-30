@@ -4,6 +4,7 @@ import com.cooksys.socialmedia.dtos.*;
 import com.cooksys.socialmedia.entities.Hashtag;
 import com.cooksys.socialmedia.entities.Tweet;
 import com.cooksys.socialmedia.entities.User;
+import com.cooksys.socialmedia.exceptions.BadRequestException;
 import com.cooksys.socialmedia.exceptions.NotAuthorizedException;
 import com.cooksys.socialmedia.exceptions.NotFoundException;
 import com.cooksys.socialmedia.repositories.HashtagRepository;
@@ -73,6 +74,16 @@ public class TweetServiceImpl implements TweetService {
 
     @Override
     public TweetResponseDto createTweet(TweetRequestDto tweetToCreate) {
+
+        if (tweetToCreate.getCredentials() == null)
+            throw new BadRequestException("missing credentials");
+        if (tweetToCreate.getCredentials().getUsername() == null)
+            throw new BadRequestException("missing username");
+        if (tweetToCreate.getCredentials().getPassword() == null)
+            throw new BadRequestException("missing password");
+        if (tweetToCreate.getContent() == null)
+            throw new BadRequestException("tweet is missing content");
+
         String username = tweetToCreate.getCredentials().getUsername();
 
         Optional<User> user = userRepository.findByCredentialsUsernameAndDeletedFalse(username);
@@ -83,8 +94,6 @@ public class TweetServiceImpl implements TweetService {
         
         Tweet tweet = new Tweet();
         tweet.setAuthor(user.get());
-        
-        
 
         String content = tweetToCreate.getContent();
         tweet.setContent(content);
@@ -237,6 +246,15 @@ public class TweetServiceImpl implements TweetService {
     @Override
     public TweetResponseDto repost(Long tweetID, TweetRequestDto tweetRequest) {
     	 // replying user exists?
+        if (tweetRequest == null)
+            throw new BadRequestException("missing request");
+        if (tweetRequest.getCredentials() == null)
+            throw new BadRequestException("missing credentials");
+        if (tweetRequest.getCredentials().getUsername() == null)
+            throw new BadRequestException("missing username");
+        if (tweetRequest.getCredentials().getPassword() == null)
+            throw new BadRequestException("missing password");
+
         Optional<User> reposter = userRepository.findByCredentialsUsernameAndDeletedFalse(tweetRequest.getCredentials().getUsername());
         if (reposter.isEmpty()) throw new NotFoundException("no user found with provided credentials");
 

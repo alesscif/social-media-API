@@ -19,6 +19,8 @@ import com.cooksys.socialmedia.services.UserService;
 import com.cooksys.socialmedia.services.ValidateService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.lang.reflect.Field;
 import java.util.*;
 import java.util.function.Predicate;
 
@@ -43,8 +45,11 @@ public class UserServiceImpl implements UserService {
     public UserResponseDto createUser(UserRequestDto userToCreate) {
 
         CredentialsDto credentials = userToCreate.getCredentials();
-        if (credentials == null || credentials.getUsername().isEmpty() || credentials.getPassword().isEmpty())
+        if (credentials == null)
             throw new BadRequestException("missing required fields: username, password");
+
+         if (credentials.getUsername() == null || credentials.getPassword() == null)
+             throw new BadRequestException("missing required fields: username, password");
 
         Optional<User> user = userRepository.findByCredentialsUsernameAndDeletedTrue(credentials.getUsername());
         if (user.isPresent()) {
@@ -61,10 +66,11 @@ public class UserServiceImpl implements UserService {
             throw new ResourceExistsException("username already exists");
         
         ProfileDto profile = userToCreate.getProfile();
-        if (profile == null || profile.getEmail().isEmpty())
+        if (profile == null)
             throw new BadRequestException("missing required field: email");
 
-        
+        if (profile.getEmail() == null)
+            throw new BadRequestException("missing required field: email");
 
         User newUser = new User();
         newUser.setCredentials(credentialsMapper.dtoToEntity(credentials));
@@ -85,13 +91,33 @@ public class UserServiceImpl implements UserService {
 
         if (user.isEmpty())
             throw new NotFoundException("no user found with provided username");
+        if (updateData.getCredentials() == null)
+            throw new BadRequestException("missing credentials");
+        if (updateData.getProfile() == null)
+            throw new BadRequestException("missing profile information");
+        if (updateData.getCredentials().getUsername() == null)
+            throw new BadRequestException("missing username");
+        if (updateData.getCredentials().getPassword() == null)
+            throw new BadRequestException("missing password");
 
+        String providedUsername = updateData.getCredentials().getUsername();
         String providedPassword = updateData.getCredentials().getPassword();
 
-        if (!user.get().getCredentials().getPassword().equals(providedPassword))
+        if (!user.get().getCredentials().getUsername().equals(providedUsername) ||
+                !user.get().getCredentials().getPassword().equals(providedPassword))
             throw new NotAuthorizedException("unauthorized");
 
-        user.get().setProfile(profileMapper.dtoToEntity(updateData.getProfile()));
+        String firstName = updateData.getProfile().getFirstName();
+        String lastName = updateData.getProfile().getLastName();
+        String phone = updateData.getProfile().getPhone();
+
+        if (firstName != null)
+            user.get().getProfile().setFirstName(firstName);
+        if (lastName != null)
+            user.get().getProfile().setLastName(lastName);
+        if (phone != null)
+            user.get().getProfile().setPhone(phone);
+
         return userMapper.entityToDto(userRepository.saveAndFlush(user.get()));
     }
 
@@ -115,6 +141,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void followUser(String username, CredentialsDto credentials) {
+
+        if (credentials == null)
+            throw new BadRequestException("missing credentials");
+        if (credentials.getUsername() == null)
+            throw new BadRequestException("missing username in body");
+        if (credentials.getPassword() == null)
+            throw new BadRequestException("missing password");
 
         Optional<User> user = userRepository.findByCredentialsUsernameAndDeletedFalse(credentials.getUsername());
 
@@ -140,10 +173,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public void unfollowUser(String username, CredentialsDto credentials) {
 
+        if (credentials == null)
+            throw new BadRequestException("missing credentials");
+        if (credentials.getUsername() == null)
+            throw new BadRequestException("missing username in body");
+        if (credentials.getPassword() == null)
+            throw new BadRequestException("missing password");
+
         Optional<User> user = userRepository.findByCredentialsUsernameAndDeletedFalse(credentials.getUsername());
 
         if (user.isEmpty())
-            throw new NotFoundException("no user found with provided username");
+            throw new NotFoundException("no user found with provided credentials");
 
         if (!user.get().getCredentials().getPassword().equals(credentials.getPassword()))
             throw new NotAuthorizedException("unauthorized");
@@ -151,7 +191,7 @@ public class UserServiceImpl implements UserService {
         Optional<User> userToUnfollow = userRepository.findByCredentialsUsernameAndDeletedFalse(username);
 
         if (userToUnfollow.isEmpty())
-            throw new NotFoundException("no user to unfollow found with provided username");
+            throw new NotFoundException("no user to follow found with provided username");
 
         if (!userToUnfollow.get().getFollowers().contains(user.get()))
             throw new BadRequestException("no following relationship exists");
@@ -165,9 +205,9 @@ public class UserServiceImpl implements UserService {
     public List<UserResponseDto> getFollowers(String username) {
         Optional<User> user = userRepository.findByCredentialsUsernameAndDeletedFalse(username);
         if (user.isEmpty()) throw new NotFoundException("no user found with provided username");
-        
+
         return userMapper.entitiesToDtos(user.get().getFollowers().stream()
-                .filter(Predicate.not(User::isDeleted))
+                .filter(User::isDeleted)
                 .toList());
     }
 
@@ -175,9 +215,9 @@ public class UserServiceImpl implements UserService {
     public List<UserResponseDto> getFollowing(String username) {
         Optional<User> user = userRepository.findByCredentialsUsernameAndDeletedFalse(username);
         if (user.isEmpty()) throw new NotFoundException("no user found with provided username");
-        
+
         return userMapper.entitiesToDtos(user.get().getFollowing().stream()
-                .filter(Predicate.not(User::isDeleted))
+                .filter(User::isDeleted)
                 .toList());
     }
 
@@ -185,8 +225,9 @@ public class UserServiceImpl implements UserService {
     public List<UserResponseDto> getMentionedUsers(Long tweetID) {
         Optional<Tweet> tweet = tweetRepository.findByIdAndDeletedFalse(tweetID);
         if (tweet.isEmpty()) throw new NotFoundException("no tweet found with provided id");
+
         return userMapper.entitiesToDtos(tweet.get().getMentionedUsers().stream()
-                .filter(Predicate.not(User::isDeleted))
+                .filter(User::isDeleted)
                 .toList());
     }
 
@@ -194,9 +235,9 @@ public class UserServiceImpl implements UserService {
     public List<UserResponseDto> getLikes(Long tweetID) {
     	Optional<Tweet> tweet = tweetRepository.findByIdAndDeletedFalse(tweetID);
     	if (tweet.isEmpty()) throw new NotFoundException("no tweet found with provided id");
-    	
+
     	return userMapper.entitiesToDtos(tweet.get().getLikedBy().stream()
-    	        .filter(Predicate.not(User::isDeleted))
+                .filter(User::isDeleted)
     	        .toList());
     }
 
