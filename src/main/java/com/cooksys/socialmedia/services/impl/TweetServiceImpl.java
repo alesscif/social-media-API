@@ -169,9 +169,10 @@ public class TweetServiceImpl implements TweetService {
         Optional<Tweet> tweet = tweetRepository.findByIdAndDeletedFalse(tweetId);
         if (tweet.isEmpty()) throw new NotFoundException("no tweet found with provided id");
 
-        //if (!user.get().getLikedTweets().contains(tweet.get())) {
+        if (!user.get().getLikedTweets().contains(tweet.get())) {
             user.get().getLikedTweets().add(tweet.get());
-        //}
+        }
+        tweetRepository.saveAndFlush(tweet.get());
     }
 
     @Override
