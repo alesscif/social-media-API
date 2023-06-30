@@ -229,7 +229,7 @@ public class TweetServiceImpl implements TweetService {
          repos.setAuthor(reposter.get());
 
     
-         repos.setContent(null);
+         repos.setContent("");
          repos.setMentionedUsers(original.get().getMentionedUsers());
          repos.setHashtags(original.get().getHashtags());
         reposts.add(repos);
