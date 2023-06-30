@@ -207,7 +207,7 @@ public class UserServiceImpl implements UserService {
         if (user.isEmpty()) throw new NotFoundException("no user found with provided username");
 
         return userMapper.entitiesToDtos(user.get().getFollowers().stream()
-                .filter(User::isDeleted)
+                .filter(Predicate.not(User::isDeleted))
                 .toList());
     }
 
@@ -217,7 +217,7 @@ public class UserServiceImpl implements UserService {
         if (user.isEmpty()) throw new NotFoundException("no user found with provided username");
 
         return userMapper.entitiesToDtos(user.get().getFollowing().stream()
-                .filter(User::isDeleted)
+                .filter(Predicate.not(User::isDeleted))
                 .toList());
     }
 
@@ -227,7 +227,7 @@ public class UserServiceImpl implements UserService {
         if (tweet.isEmpty()) throw new NotFoundException("no tweet found with provided id");
 
         return userMapper.entitiesToDtos(tweet.get().getMentionedUsers().stream()
-                .filter(User::isDeleted)
+                .filter(Predicate.not(User::isDeleted))
                 .toList());
     }
 
@@ -237,7 +237,7 @@ public class UserServiceImpl implements UserService {
     	if (tweet.isEmpty()) throw new NotFoundException("no tweet found with provided id");
 
     	return userMapper.entitiesToDtos(tweet.get().getLikedBy().stream()
-                .filter(User::isDeleted)
+                .filter(Predicate.not(User::isDeleted))
     	        .toList());
     }
 
