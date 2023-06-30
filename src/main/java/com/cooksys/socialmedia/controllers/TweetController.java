@@ -84,4 +84,10 @@ public class TweetController {
 	public List<UserResponseDto> getMentionedUsers(@PathVariable Long id){
 		return userService.getMentionedUsers(id);
 	}
+
+	@DeleteMapping(path="/{id}")
+	public TweetResponseDto deleteTweet(@PathVariable Long id, @RequestBody CredentialsDto credentials) {
+		return tweetService.deleteTweet(id, credentials);
+	}
+
 }

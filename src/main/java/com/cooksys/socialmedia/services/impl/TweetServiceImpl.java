@@ -14,6 +14,8 @@ import com.cooksys.socialmedia.services.TweetService;
 import com.cooksys.socialmedia.mappers.TweetMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.regex.MatchResult;
 
@@ -75,6 +77,8 @@ public class TweetServiceImpl implements TweetService {
     @Override
     public TweetResponseDto createTweet(TweetRequestDto tweetToCreate) {
 
+        if (tweetToCreate == null)
+            throw new BadRequestException("missing request body");
         if (tweetToCreate.getCredentials() == null)
             throw new BadRequestException("missing credentials");
         if (tweetToCreate.getCredentials().getUsername() == null)
@@ -232,21 +236,17 @@ public class TweetServiceImpl implements TweetService {
         // set hashtags
         tweet.setHashtags(tags);
 
-        // add to replies to original
-        List<Tweet> replies = original.get().getReplies();
-        replies.add(tweet);
-
-        // save reply and original
-        tweetRepository.saveAndFlush(tweet);
+        // create reply relationship
+        tweet.setInReplyTo(original.get());
         tweetRepository.saveAndFlush(original.get());
 
-        // return reply
-        return tweetMapper.entityToDto(tweet);
+        // save and return
+        return tweetMapper.entityToDto(tweetRepository.saveAndFlush(tweet));
     }
 
     @Override
     public TweetResponseDto repost(Long tweetID, TweetRequestDto tweetRequest) {
-    	 // replying user exists?
+
         if (tweetRequest == null)
             throw new BadRequestException("missing request");
         if (tweetRequest.getCredentials() == null)
@@ -318,25 +318,20 @@ public class TweetServiceImpl implements TweetService {
     public List<TweetResponseDto> getReplies(Long tweetID) {
     	 Optional<Tweet> tweet = tweetRepository.findByIdAndDeletedFalse(tweetID);
          if (tweet.isEmpty()) throw new NotFoundException("no tweet found with provided id");
-         List <Tweet> replies=new ArrayList<>();
-         for(Tweet t: tweet.get().getReplies())
-         {	if(!t.isDeleted())
-        	 	replies.add(t);
-	
-         }
-         return  tweetMapper.entitiesToDtos(replies);
+
+         return  tweetMapper.entitiesToDtos(tweet.get().getReplies().stream()
+                 .filter(Predicate.not(Tweet::isDeleted))
+                 .toList());
     }
 
     @Override
     public List<TweetResponseDto> getReposts(Long tweetID) {
     	 Optional<Tweet> tweet = tweetRepository.findByIdAndDeletedFalse(tweetID);
          if (tweet.isEmpty()) throw new NotFoundException("no tweet found with provided id");
-         List <Tweet> reposts=new ArrayList<>();
-         for (Tweet t: tweet.get().getReposts()) {
-             if (!t.isDeleted())
-        	 	reposts.add(t);
-         }
-         return  tweetMapper.entitiesToDtos(reposts);
+
+         return  tweetMapper.entitiesToDtos(tweet.get().getReposts().stream()
+                 .filter(Predicate.not(Tweet::isDeleted))
+                 .toList());
     }
 
     @Override
