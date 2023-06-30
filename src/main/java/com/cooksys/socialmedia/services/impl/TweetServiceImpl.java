@@ -40,9 +40,12 @@ public class TweetServiceImpl implements TweetService {
                  feed.addAll(t.getReposts());
                  feed.addAll(t.getReplies());
              }
-             feed.sort(Comparator.comparing(Tweet::getPosted));
-             Collections.reverse(feed);
+    		 
+            
     	 }
+    	 feed.addAll(user.get().getTweets());
+    	 feed.sort(Comparator.comparing(Tweet::getPosted));
+         Collections.reverse(feed);
         return tweetMapper.entitiesToDtos(feed);
     }
    
