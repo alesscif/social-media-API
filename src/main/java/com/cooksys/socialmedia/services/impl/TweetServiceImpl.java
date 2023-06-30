@@ -303,10 +303,9 @@ public class TweetServiceImpl implements TweetService {
     	 Optional<Tweet> tweet = tweetRepository.findByIdAndDeletedFalse(tweetID);
          if (tweet.isEmpty()) throw new NotFoundException("no tweet found with provided id");
          List <Tweet> repost=new ArrayList<>();
-         for(Tweet t: tweet.get().getReposts())
-         {	if(!t.isDeleted())
+         for (Tweet t: tweet.get().getReposts()) {
+             if (!t.isDeleted())
         	 	repost.add(t);
-	
          }
          return  tweetMapper.entitiesToDtos(repost);
     }

@@ -184,14 +184,11 @@ public class UserServiceImpl implements UserService {
     public List<UserResponseDto> getLikes(Long tweetID) {
     	Optional<Tweet> tweet = tweetRepository.findByIdAndDeletedFalse(tweetID);
     	if (tweet.isEmpty()) throw new NotFoundException("no tweet found with provided id");
-    	List <User> users=new ArrayList<>();
-    			for(User u:tweet.get().getLikedBy())
-    			{
-    				if(!u.isDeleted()) users.add(u);
+    	List<User> users = new ArrayList<>();
+    			for (User u : tweet.get().getLikedBy()) {
+    				if (!u.isDeleted()) users.add(u);
     			}
           return userMapper.entitiesToDtos(users);
-          
     }
-
 
 }
