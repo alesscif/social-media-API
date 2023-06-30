@@ -49,6 +49,21 @@ public class UserController {
         return tweetService.getFeed(username);
     }
 
+    @PostMapping
+    public UserResponseDto createUser(@RequestBody UserRequestDto createData) {
+        return userService.createUser(createData);
+    }
+
+    @PostMapping(path="/@{username}/follow")
+    public void followUser(@PathVariable String id, @RequestBody CredentialsDto credentials) {
+        userService.followUser(id, credentials);
+    }
+
+    @PostMapping(path="/@{username}/unfollow")
+    public void unfollowUser(@PathVariable String id, @RequestBody CredentialsDto credentials) {
+        userService.unfollowUser(id, credentials);
+    }
+
     @PatchMapping(path="/@{username}")
     public UserResponseDto updateUser(@PathVariable String username, @RequestBody UserRequestDto updateData) {
         return userService.updateUser(username, updateData);

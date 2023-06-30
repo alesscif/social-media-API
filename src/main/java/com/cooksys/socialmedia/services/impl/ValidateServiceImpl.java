@@ -21,12 +21,12 @@ public class ValidateServiceImpl implements ValidateService {
 
     @Override
     public boolean usernameExists(String username) {
-        return userRepository.existsByCredentialsUsernameAndDeletedFalse(username);
+        return userRepository.existsByCredentialsUsername(username);
     }
 
     @Override
     public boolean usernameIsAvailable(String username) {
-        return !userRepository.existsByCredentialsUsernameAndDeletedFalse(username);
+        return !userRepository.existsByCredentialsUsername(username);
     }
 
 }

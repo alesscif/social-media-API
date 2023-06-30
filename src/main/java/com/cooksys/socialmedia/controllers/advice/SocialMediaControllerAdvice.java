@@ -4,6 +4,7 @@ import com.cooksys.socialmedia.dtos.ErrorDto;
 import com.cooksys.socialmedia.exceptions.BadRequestException;
 import com.cooksys.socialmedia.exceptions.NotAuthorizedException;
 import com.cooksys.socialmedia.exceptions.NotFoundException;
+import com.cooksys.socialmedia.exceptions.ResourceExistsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -31,5 +32,14 @@ public class SocialMediaControllerAdvice {
     public ErrorDto handleNotFoundException(NotFoundException notFoundException) {
         return new ErrorDto(notFoundException.getMessage());
     }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(ResourceExistsException.class)
+    public ErrorDto handleResourceExistsException(ResourceExistsException resourceExistsException) {
+        return new ErrorDto(resourceExistsException.getMessage());
+    }
+
+
+
 
 }

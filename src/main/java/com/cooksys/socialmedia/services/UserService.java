@@ -14,8 +14,8 @@ public interface UserService {
     UserResponseDto getUser(String username);
     UserResponseDto updateUser(String username, UserRequestDto updateData);
     UserResponseDto deleteUser(String username, CredentialsDto credentials);
-    void followUser(UserRequestDto userToFollow);
-    void unfollowUser(UserRequestDto userToUnfollow);
+    void followUser(String username, CredentialsDto credentials);
+    void unfollowUser(String username, CredentialsDto credentials);
     List<UserResponseDto> getFollowers(String username);
     List<UserResponseDto> getFollowing(String username);
     List<UserResponseDto> getMentionedUsers(Long tweetID);

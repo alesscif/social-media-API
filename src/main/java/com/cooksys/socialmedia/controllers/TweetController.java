@@ -58,9 +58,8 @@ public class TweetController {
 	@GetMapping(path="/{id}/likes")
     public List<UserResponseDto> getLikes(@PathVariable Long id) {
     	return userService.getLikes(id);
-    	
     }
-	
+
 	@GetMapping (path = "/{id}/tags")
 	public List<HashtagDto> getTags(@PathVariable Long id) {
 		return hashtagService.getTags(id);
@@ -76,4 +75,8 @@ public class TweetController {
 		return tweetService.repost(id,credentials);
 	}
 
+	@PostMapping(path="/{id}/like")
+	public void like(@PathVariable Long id, @RequestBody CredentialsDto credentials) {
+		tweetService.likeTweet(id, credentials);
+	}
 }

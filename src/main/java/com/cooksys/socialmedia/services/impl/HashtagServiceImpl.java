@@ -33,9 +33,9 @@ public class HashtagServiceImpl implements HashtagService {
 	public List<HashtagDto> getTags(Long tweetID) {
 		 Optional<Tweet> tweet = tweetRepository.findByIdAndDeletedFalse(tweetID);
          if (tweet.isEmpty()) throw new NotFoundException("no tweet found with provided id");
-         List <Hashtag> tags=tweet.get().getHashtags();
+         List<Hashtag> tags = tweet.get().getHashtags();
          
-         return  hashtagMapper.entitiesToDtos(tags);
+         return hashtagMapper.entitiesToDtos(tags);
 	}
 
 }
