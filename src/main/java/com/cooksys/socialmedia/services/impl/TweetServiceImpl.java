@@ -245,21 +245,21 @@ public class TweetServiceImpl implements TweetService {
     }
 
     @Override
-    public TweetResponseDto repost(Long tweetID, TweetRequestDto tweetRequest) {
+    public TweetResponseDto repost(Long tweetID, CredentialsDto credentials) {
 
-        if (tweetRequest == null)
-            throw new BadRequestException("missing request");
-        if (tweetRequest.getCredentials() == null)
+    
+
+        Optional<User> reposter = userRepository.findByCredentialsUsernameAndDeletedFalse(credentials.getUsername());
+        if (reposter.isEmpty()) throw new NotFoundException("no user found with provided credentials");
+        
+        if (reposter.get().getCredentials() == null)
             throw new BadRequestException("missing credentials");
-        if (tweetRequest.getCredentials().getUsername() == null)
+        if (reposter.get().getCredentials().getUsername() == null)
             throw new BadRequestException("missing username");
-        if (tweetRequest.getCredentials().getPassword() == null)
+        if (reposter.get().getCredentials().getPassword() == null)
             throw new BadRequestException("missing password");
 
-        Optional<User> reposter = userRepository.findByCredentialsUsernameAndDeletedFalse(tweetRequest.getCredentials().getUsername());
-        if (reposter.isEmpty()) throw new NotFoundException("no user found with provided credentials");
-
-         String providedPassword = tweetRequest.getCredentials().getPassword();
+         String providedPassword = credentials.getPassword();
 
          // credentials ok?
          if (!reposter.get().getCredentials().getPassword().equals(providedPassword))
@@ -273,8 +273,6 @@ public class TweetServiceImpl implements TweetService {
     	 Tweet repos = new Tweet();
          repos.setAuthor(reposter.get());
 
-         repos.setMentionedUsers(original.get().getMentionedUsers());
-         repos.setHashtags(original.get().getHashtags());
          repos.setRepostOf(original.get());
          
          
