@@ -209,21 +209,31 @@ public class TweetServiceImpl implements TweetService {
     }
 
     @Override
-    public TweetResponseDto repost(Long tweetID, CredentialsDto credentials) {
-    	Optional<Tweet> original=tweetRepository.findByIdAndDeletedFalse(tweetID);
-    	if (original.isEmpty()) throw new NotFoundException("no tweet found with provided id");
-    	Optional<User> reposter=userRepository.findByCredentialsUsernameAndDeletedFalse(credentials.getUsername());
-    	if (reposter.isEmpty()) throw new NotFoundException("no user found with provided username");
-    	List <Tweet> reposts=original.get().getReposts();
-    	
+    public TweetResponseDto repost(Long tweetID, TweetRequestDto tweetRequest) {
+    	 // replying user exists?
+        Optional<User> reposter = userRepository.findByCredentialsUsernameAndDeletedFalse(tweetRequest.getCredentials().getUsername());
+        if (reposter.isEmpty()) throw new NotFoundException("no user found with provided credentials");
+
+         String providedPassword = tweetRequest.getCredentials().getPassword();
+
+         // credentials ok?
+         if (!reposter.get().getCredentials().getPassword().equals(providedPassword))
+             throw new NotAuthorizedException("unauthorized");
+
+         // original tweet exists?
+         Optional<Tweet> original = tweetRepository.findByIdAndDeletedFalse(tweetID);
+         if (original.isEmpty()) throw new NotFoundException("no tweet found with provided id");
+         
+         List <Tweet> reposts=original.get().getReposts();
     	 Tweet repos = new Tweet();
          repos.setAuthor(reposter.get());
 
-         String content = original.get().getContent();
-         repos.setContent(content);
+    
+         repos.setContent(null);
          repos.setMentionedUsers(original.get().getMentionedUsers());
          repos.setHashtags(original.get().getHashtags());
-         reposts.add(repos);
+        reposts.add(repos);
+        original.get().setReposts(reposts);
          tweetRepository.saveAndFlush(original.get());
          
          return tweetMapper.entityToDto(tweetRepository.saveAndFlush(repos));

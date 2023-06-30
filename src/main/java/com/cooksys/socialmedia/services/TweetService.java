@@ -14,7 +14,7 @@ public interface TweetService {
     TweetResponseDto deleteTweet(Long tweetID, CredentialsDto credentials);
     void likeTweet(Long tweetId, CredentialsDto credentials);
     TweetResponseDto reply(Long tweetID, TweetRequestDto tweetRequest);
-    TweetResponseDto repost(Long tweetID, CredentialsDto credentials);
+    TweetResponseDto repost(Long tweetID, TweetRequestDto tweetRequest);
     ContextDto getContext(Long tweetID);
     List<TweetResponseDto> getReplies(Long tweetID);
     List<TweetResponseDto> getReposts(Long tweetID);
