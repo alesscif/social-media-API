@@ -12,7 +12,6 @@ import com.cooksys.socialmedia.repositories.UserRepository;
 import com.cooksys.socialmedia.services.TweetService;
 import com.cooksys.socialmedia.mappers.TweetMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import java.util.regex.Pattern;
 import java.util.regex.MatchResult;
@@ -40,8 +39,6 @@ public class TweetServiceImpl implements TweetService {
                  feed.addAll(t.getReposts());
                  feed.addAll(t.getReplies());
              }
-    		 
-            
     	 }
     	 feed.addAll(user.get().getTweets());
     	 feed.sort(Comparator.comparing(Tweet::getPosted));
@@ -54,7 +51,7 @@ public class TweetServiceImpl implements TweetService {
     public List<TweetResponseDto> getTweets(String username) {
         Optional<User> user = userRepository.findByCredentialsUsernameAndDeletedFalse(username);
         if (user.isEmpty()) throw new NotFoundException("no user found with provided username");
-        return tweetMapper.entitiesToDtos(tweetRepository.findByAuthorAndDeletedFalse(user.get()));
+        return tweetMapper.entitiesToDtos(tweetRepository.findByAuthorAndDeletedFalseOrderByPostedDesc(user.get()));
     }
 
     @Override
@@ -70,7 +67,7 @@ public class TweetServiceImpl implements TweetService {
 
     @Override
     public List<TweetResponseDto> getAllTweets() {
-        return tweetMapper.entitiesToDtos(tweetRepository.findAll(Sort.by(Sort.Direction.DESC,"posted")));
+        return tweetMapper.entitiesToDtos(tweetRepository.findAllByDeletedFalseOrderByPostedDesc());
     }
 
     @Override
@@ -107,15 +104,13 @@ public class TweetServiceImpl implements TweetService {
 
         List<Hashtag> tags = new ArrayList<>();
         for (String label : hashtags) {
-            Optional<Hashtag> h = hashtagRepository.findByLabel(label.substring(1));
-            if (h.isEmpty()) {
+            if (!hashtagRepository.existsByLabel(label)) {
                 Hashtag ht = new Hashtag();
                 ht.setLabel(label.substring(1));
                 hashtagRepository.saveAndFlush(ht);
                 tags.add(ht);
-                continue;
             }
-            tags.add(h.get());
+            else tags.add(hashtagRepository.findByLabel(label).get());
         }
         tweet.setHashtags(tags);
 
@@ -131,12 +126,38 @@ public class TweetServiceImpl implements TweetService {
 
     @Override
     public TweetResponseDto deleteTweet(Long tweetID, CredentialsDto credentials) {
-        return null;
+        Optional<Tweet> tweet = tweetRepository.findByIdAndDeletedFalse(tweetID);
+
+        if (tweet.isEmpty())
+            throw new NotFoundException("no tweet found with provided id");
+
+        User author = tweet.get().getAuthor();
+
+        if (!author.getCredentials().getUsername().equals(credentials.getUsername())
+                || !author.getCredentials().getPassword().equals(credentials.getPassword()))
+            throw new NotAuthorizedException("unauthorized");
+
+        tweet.get().setDeleted(true);
+        return tweetMapper.entityToDto(tweetRepository.saveAndFlush(tweet.get()));
     }
 
     @Override
     public void likeTweet(Long tweetId, CredentialsDto credentials) {
-        return;
+        Optional<User> user = userRepository.findByCredentialsUsernameAndDeletedFalse(credentials.getUsername());
+
+        if (user.isEmpty())
+            throw new NotFoundException("no user found with provided username");
+
+        if (!user.get().getCredentials().getUsername().equals(credentials.getUsername())
+                || !user.get().getCredentials().getPassword().equals(credentials.getPassword()))
+            throw new NotAuthorizedException("unauthorized");
+
+        Optional<Tweet> tweet = tweetRepository.findByIdAndDeletedFalse(tweetId);
+        if (tweet.isEmpty()) throw new NotFoundException("no tweet found with provided id");
+
+        if (!tweet.get().getLikedBy().contains(user.get())) {
+            tweet.get().getLikedBy().add(user.get());
+        }
     }
 
     @Override
@@ -186,16 +207,13 @@ public class TweetServiceImpl implements TweetService {
 
         List<Hashtag> tags = new ArrayList<>();
         for (String label : hashtags) {
-            Optional<Hashtag> h = hashtagRepository.findByLabel(label.substring(1));
-            if (h.isEmpty()) {
+            if (!hashtagRepository.existsByLabel(label)) {
                 Hashtag ht = new Hashtag();
                 ht.setLabel(label.substring(1));
                 hashtagRepository.saveAndFlush(ht);
                 tags.add(ht);
-                continue;
             }
-            tags.add(h.get());
-        }
+            else tags.add(hashtagRepository.findByLabel(label).get());        }
         // set hashtags
         tweet.setHashtags(tags);
 
@@ -231,12 +249,10 @@ public class TweetServiceImpl implements TweetService {
     	 Tweet repos = new Tweet();
          repos.setAuthor(reposter.get());
 
-    
-         repos.setContent("");
          repos.setMentionedUsers(original.get().getMentionedUsers());
          repos.setHashtags(original.get().getHashtags());
-        reposts.add(repos);
-        original.get().setReposts(reposts);
+         reposts.add(repos);
+         original.get().setReposts(reposts);
          tweetRepository.saveAndFlush(original.get());
          
          return tweetMapper.entityToDto(tweetRepository.saveAndFlush(repos));
@@ -293,10 +309,9 @@ public class TweetServiceImpl implements TweetService {
     	 Optional<Tweet> tweet = tweetRepository.findByIdAndDeletedFalse(tweetID);
          if (tweet.isEmpty()) throw new NotFoundException("no tweet found with provided id");
          List <Tweet> repost=new ArrayList<>();
-         for(Tweet t: tweet.get().getReposts())
-         {	if(!t.isDeleted())
+         for (Tweet t: tweet.get().getReposts()) {
+             if (!t.isDeleted())
         	 	repost.add(t);
-	
          }
          return  tweetMapper.entitiesToDtos(repost);
     }
@@ -305,7 +320,7 @@ public class TweetServiceImpl implements TweetService {
     public List<TweetResponseDto> getTweetsWithUserMentions(String username) {
         Optional<User> user = userRepository.findByCredentialsUsernameAndDeletedFalse(username);
         if (user.isEmpty()) throw new NotFoundException("no user found with provided username");
-        return tweetMapper.entitiesToDtos(tweetRepository.findByAuthorAndDeletedFalse(user.get()));
+        return tweetMapper.entitiesToDtos(tweetRepository.findByAuthorAndDeletedFalseOrderByPostedDesc(user.get()));
     }
 
 }
